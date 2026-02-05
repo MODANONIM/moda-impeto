@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="MODA IMPETO - quiet / dangerous. Wear your impulse. Luxury streetwear fashion brand.">
+  <meta name="keywords" content="MODA IMPETO, fashion, streetwear, luxury, brand">
+  <title>MODA IMPETO | quiet / dangerous</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Cinzel:wght@400;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo-link">
+      <img src="assets/logo.png" alt="MODA IMPETO" class="nav__logo">
+    </a>
+    <div class="nav__cart">
+      <a href="cart.html" class="nav__cart-link">
+        <svg viewBox="0 0 24 24" class="nav__cart-icon">
+          <path
+            d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+        </svg>
+        <span class="nav__cart-count" id="cartCount">0</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero__content">
+      <img src="assets/logo.png" alt="MODA IMPETO Logo" class="hero__logo">
+      <div class="hero__tagline">
+        <span class="hero__tagline-quiet">quiet</span>
+        <span class="hero__tagline-divider"></span>
+        <span class="hero__tagline-dangerous">dangerous</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products" id="products">
+    <div class="container">
+      <div class="section__header">
+        <p class="section__subtitle text-accent">New Season</p>
+        <h2 class="section__title">The Collection</h2>
+      </div>
+
+      <div class="products__grid">
+        <!-- Product Card 1 -->
+        <article class="product-card fade-in">
+          <div class="product-card__image">
+            <img src="assets/products/product_jacket_1770300090044.png" alt="IMPETO Leather Jacket">
+          </div>
+          <div class="product-card__info">
+            <span class="product-card__category">Outerwear</span>
+            <h3 class="product-card__name">IMPETO Leather Jacket</h3>
+            <p class="product-card__price">¥128,000</p>
+          </div>
+          <div class="product-card__overlay">
+            <button class="btn btn--primary add-to-cart" data-id="1">ADD TO CART</button>
+          </div>
+        </article>
+
+        <!-- Product Card 2 -->
+        <article class="product-card fade-in">
+          <div class="product-card__image">
+            <img src="assets/products/product_hoodie_1770300104061.png" alt="IMPETO Signature Hoodie">
+          </div>
+          <div class="product-card__info">
+            <span class="product-card__category">Tops</span>
+            <h3 class="product-card__name">IMPETO Signature Hoodie</h3>
+            <p class="product-card__price">¥48,000</p>
+          </div>
+          <div class="product-card__overlay">
+            <button class="btn btn--primary add-to-cart" data-id="2">ADD TO CART</button>
+          </div>
+        </article>
+
+        <!-- Product Card 3 -->
+        <article class="product-card fade-in">
+          <div class="product-card__image">
+            <img src="assets/products/product_tshirt_1770300121576.png" alt="IMPETO Essential Tee">
+          </div>
+          <div class="product-card__info">
+            <span class="product-card__category">Tops</span>
+            <h3 class="product-card__name">IMPETO Essential Tee</h3>
+            <p class="product-card__price">¥18,000</p>
+          </div>
+          <div class="product-card__overlay">
+            <button class="btn btn--primary add-to-cart" data-id="3">ADD TO CART</button>
+          </div>
+        </article>
+
+        <!-- Product Card 4 -->
+        <article class="product-card fade-in">
+          <div class="product-card__image">
+            <img src="assets/products/product_pants_1770300139239.png" alt="IMPETO Cargo Pants">
+          </div>
+          <div class="product-card__info">
+            <span class="product-card__category">Bottoms</span>
+            <h3 class="product-card__name">IMPETO Cargo Pants</h3>
+            <p class="product-card__price">¥58,000</p>
+          </div>
+          <div class="product-card__overlay">
+            <button class="btn btn--primary add-to-cart" data-id="4">ADD TO CART</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story Section -->
+  <section class="story" id="story">
+    <div class="container">
+      <div class="story__content">
+        <div class="story__text fade-in">
+          <p class="section__subtitle text-accent">Our Philosophy</p>
+          <h2>The Art of <span>IMPETO</span></h2>
+          <p>
+            Impulse is the purest energy that lies within the human essence.
+            MODA IMPETO expresses the irrepressible creative impulse
+            through the medium of fashion.
+          </p>
+          <p>
+            Quietly, yet dangerously beautiful.
+            What we propose is not mere clothing.
+            It is the courage to wear your inner passion.
+          </p>
+        </div>
+        <div class="story__visual fade-in">
+          <img src="assets/logo.png" alt="MODA IMPETO Symbol" class="story__logo">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 MODA IMPETO. All rights reserved.</p>
+        <div class="footer__legal">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="shipping.html">Shipping Policy</a>
+          <a href="refund.html">Return & Refund</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="contact.html">Contact Information</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

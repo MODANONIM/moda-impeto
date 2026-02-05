@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Review your selected items in the MODA IMPETO cart.">
+    <title>Shopping Cart | MODA IMPETO</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Cinzel:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cart.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav scrolled" id="nav">
+        <a href="index.html" class="nav__logo-link">
+            <img src="assets/logo.png" alt="MODA IMPETO" class="nav__logo">
+        </a>
+        <div class="nav__cart">
+            <a href="cart.html" class="nav__cart-link">
+                <svg viewBox="0 0 24 24" class="nav__cart-icon">
+                    <path
+                        d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                </svg>
+                <span class="nav__cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Cart Content -->
+    <main class="cart-page">
+        <div class="container">
+            <h1 class="cart-page__title">Shopping Cart</h1>
+
+            <div class="cart-container">
+                <div class="cart-items" id="cartItems">
+                    <!-- Items rendered by JS -->
+                    <div class="cart-loading">Loading items...</div>
+                </div>
+
+                <div class="cart-summary">
+                    <h2 class="cart-summary__title">Order Summary</h2>
+                    <div class="cart-summary__row">
+                        <span>Subtotal</span>
+                        <span id="cartSubtotal">¥0</span>
+                    </div>
+                    <div class="cart-summary__row">
+                        <span>Shipping</span>
+                        <span>Free</span>
+                    </div>
+                    <div class="cart-summary__total">
+                        <span>Total</span>
+                        <span id="totalDisplay">¥0</span>
+                    </div>
+                    <button class="btn btn--primary checkout-btn"
+                        onclick="alert('Checkout process initiated.')">CHECKOUT</button>
+                    <a href="index.html" class="continue-link">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer__bottom">
+                <p class="footer__copyright">© 2026 MODA IMPETO. All rights reserved.</p>
+                <div class="footer__legal">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="shipping.html">Shipping Policy</a>
+                    <a href="refund.html">Return & Refund</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact Information</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Update total display (same as subtotal for now as shipping is free)
+        document.addEventListener('DOMContentLoaded', () => {
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const totalDisplayEl = document.getElementById('totalDisplay');
+
+            if (subtotalEl && totalDisplayEl) {
+                // Initial sync
+                totalDisplayEl.textContent = subtotalEl.textContent;
+
+                // Sync on change
+                const observer = new MutationObserver(() => {
+                    totalDisplayEl.textContent = subtotalEl.textContent;
+                });
+                observer.observe(subtotalEl, { childList: true });
+            }
+        });
+    </script>
+</body>
+
+</html>
