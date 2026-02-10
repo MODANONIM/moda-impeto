@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, '/')));
 // Use environment variable for MongoDB connection, fallback to local DB for development
 const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/moda_impeto?directConnection=true';
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
     .then(async () => {
         console.log('MongoDB Connected');
         // Create Default Admin
