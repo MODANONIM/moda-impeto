@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODA IMPETO | My Account</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Cinzel:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="order_history.css"> <!-- Reuse order history styles -->
+    <style>
+        .account-header {
+            max-width: 1000px;
+            margin: 120px auto 40px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .account-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--color-white);
+            color: var(--color-white);
+            padding: 8px 20px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: var(--color-white);
+            color: var(--color-black);
+        }
+
+        .account-info {
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            width: 120px;
+            font-weight: 600;
+            color: var(--color-gray);
+        }
+
+        .history-container {
+            padding-top: 0;
+            /* Override default */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <a href="index.html" class="nav__logo-link">
+            <img src="assets/logo.png" alt="MODA IMPETO" class="nav__logo">
+        </a>
+        <div class="nav__user-actions">
+            <!-- Cart & Account links will be handled by script.js -->
+        </div>
+    </nav>
+
+    <div class="account-header">
+        <h1 class="account-title">My Account</h1>
+        <button id="logoutBtn" class="btn-logout">LOGOUT</button>
+    </div>
+
+    <div class="account-info">
+        <div class="info-row">
+            <span class="info-label">Name:</span>
+            <span id="userName">Loading...</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Email:</span>
+            <span id="userEmail">Loading...</span>
+        </div>
+
+        <!-- Password Change Section -->
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="font-family: 'Cinzel', serif; margin-bottom: 15px;">Change Password</h3>
+            <form id="changePasswordForm" style="max-width: 300px;">
+                <div style="margin-bottom: 15px;">
+                    <input type="password" id="oldPassword" placeholder="Current Password" required
+                        style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: 'Bodoni Moda', serif;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <input type="password" id="newPassword" placeholder="New Password" required
+                        style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: 'Bodoni Moda', serif;">
+                </div>
+                <button type="submit" class="btn btn--primary" style="width: 100%;">UPDATE PASSWORD</button>
+            </form>
+            <p id="passwordMessage" style="margin-top: 10px; font-size: 0.9rem; display: none;"></p>
+        </div>
+    </div>
+
+    <div class="history-container">
+        <h2 style="font-family: 'Cinzel', serif; margin-bottom: 30px;">Order History</h2>
+        <div id="userOrderHistoryList">
+            <p class="empty-history">Loading order history...</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p style="text-align: center; color: var(--color-gray); font-size: 0.8rem;">
+                © 2026 MODA IMPETO. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('moda_impeto_user_token');
+            if (!token) {
+                window.location.href = 'account_login.html';
+                return;
+            }
+
+            // Fetch User Info
+            try {
+                const res = await fetch('/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error('Auth failed');
+
+                const user = await res.json();
+                document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+                document.getElementById('userEmail').textContent = user.email;
+
+                // Load Orders (Using initOrderHistory but modifying fetch logic internally? 
+                // actually simpler to just fetch here for now since initOrderHistory is built for localStorage)
+                loadUserOrders(user._id);
+
+            } catch (err) {
+                console.error(err);
+                localStorage.removeItem('moda_impeto_user_token');
+                window.location.href = 'account_login.html';
+            }
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('moda_impeto_user_token');
+                localStorage.removeItem('moda_impeto_user');
+                window.location.href = 'index.html';
+            });
+
+            // Password Change
+            document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                const messageEl = document.getElementById('passwordMessage');
+
+                btn.disabled = true;
+                btn.textContent = 'UPDATING...';
+                messageEl.style.display = 'none';
+
+                const oldPassword = document.getElementById('oldPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+
+                try {
+                    const token = localStorage.getItem('moda_impeto_user_token');
+                    const res = await fetch('/api/auth/user-change-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ oldPassword, newPassword })
+                    });
+
+                    const result = await res.json();
+
+                    if (res.ok) {
+                        messageEl.textContent = result.message;
+                        messageEl.style.color = '#4CAF50';
+                        document.getElementById('oldPassword').value = '';
+                        document.getElementById('newPassword').value = '';
+                    } else {
+                        messageEl.textContent = result.message;
+                        messageEl.style.color = '#f44336';
+                    }
+                    messageEl.style.display = 'block';
+                } catch (err) {
+                    messageEl.textContent = 'エラーが発生しました';
+                    messageEl.style.color = '#f44336';
+                    messageEl.style.display = 'block';
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'UPDATE PASSWORD';
+                }
+            });
+        });
+
+        async function loadUserOrders(userId) {
+            // We need a new endpoint for getting user's orders, or modify initOrderHistory.
+            // Let's reuse the logic but fetch by User ID is safer.
+            // Actually, for now, let's fetch ALL orders and filter by user ID in frontend (not secure but quick), 
+            // OR add a proper endpoint. 
+            // Better: Add GET /api/my-orders-auth
+
+            // For now, let's stick to the plan:
+            // "GET /api/users/:id" is Admin only.
+            // We need an endpoint for the user to get THEIR OWN orders.
+            // Let's add that to routes/api.js first? Or just use the existing "my-orders" with a new behavior?
+            // "POST /api/my-orders" takes IDs.
+
+            // Let's implement client-side fetch for now using a new dedicated endpoint I'll add quickly.
+            // Wait, I didn't add that to the plan.
+            // Let's use the localStorage approach for now but merged with User ID check?
+            // No, logged in users should see orders from DB.
+
+            // I will add `GET /api/orders/me` to the API routes in the next step.
+            // For this file, I'll assume that endpoint exists.
+
+            try {
+                const token = localStorage.getItem('moda_impeto_user_token');
+                const res = await fetch('/api/orders/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error('Failed to fetch orders');
+
+                const orders = await res.json();
+                renderOrders(orders);
+            } catch (e) {
+                document.getElementById('userOrderHistoryList').innerHTML = '<p class="empty-history">No orders found.</p>';
+            }
+        }
+
+        function renderOrders(orders) {
+            const listContainer = document.getElementById('userOrderHistoryList');
+            if (orders.length === 0) {
+                listContainer.innerHTML = '<p class="empty-history">No orders found.</p>';
+                return;
+            }
+
+            listContainer.innerHTML = orders.map(order => {
+                const date = new Date(order.createdAt).toLocaleDateString('ja-JP', {
+                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                const statusClass = `status-${order.status.toLowerCase()}`;
+                const itemsHtml = order.items.map(item => `
+                    <div class="order-item">
+                        <img src="${item.image}" alt="${item.name}" class="item-image">
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-meta">Size: ${item.size || 'Free'} | Qty: ${item.quantity}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="order-card fade-in visible">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-id">Order #${order.orderId}</div>
+                                <div class="order-date">${date}</div>
+                            </div>
+                            <div class="order-status ${statusClass}">${order.status}</div>
+                        </div>
+                        <div class="order-items">${itemsHtml}</div>
+                        <div class="order-footer">
+                            <div class="order-total">Total: ¥${order.totalAmount.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+
+</html>

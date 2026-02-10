@@ -5,8 +5,8 @@
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Review your selected items in the MODA IMPETO cart.">
-    <title>Shopping Cart | MODA IMPETO</title>
+    <meta name="description" content="Explore exclusive streetwear at MODA IMPETO.">
+    <title>Product Details | MODA IMPETO</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="cart.css">
+    <link rel="stylesheet" href="product.css">
 </head>
 
 <body>
@@ -43,36 +43,11 @@
         </div>
     </nav>
 
-    <!-- Cart Content -->
-    <main class="cart-page">
-        <div class="container">
-            <h1 class="cart-page__title">Shopping Cart</h1>
-
-            <div class="cart-container">
-                <div class="cart-items" id="cartItems">
-                    <!-- Items rendered by JS -->
-                    <div class="cart-loading">Loading items...</div>
-                </div>
-
-                <div class="cart-summary">
-                    <h2 class="cart-summary__title">Order Summary</h2>
-                    <div class="cart-summary__row">
-                        <span>Subtotal</span>
-                        <span id="cartSubtotal">¥0</span>
-                    </div>
-                    <div class="cart-summary__row">
-                        <span>Shipping</span>
-                        <span>Free</span>
-                    </div>
-                    <div class="cart-summary__total">
-                        <span>Total</span>
-                        <span id="totalDisplay">¥0</span>
-                    </div>
-                    <button class="btn btn--primary checkout-btn"
-                        onclick="window.location.href='checkout.html'">CHECKOUT</button>
-                    <a href="index.html" class="continue-link">Continue Shopping</a>
-                </div>
-            </div>
+    <!-- Product Detail Content -->
+    <main class="product-page">
+        <div class="container" id="productDetail">
+            <!-- Rendered by JS -->
+            <div class="loading">Loading product details...</div>
         </div>
     </main>
 
@@ -93,24 +68,6 @@
     </footer>
 
     <script src="script.js"></script>
-    <script>
-        // Update total display (same as subtotal for now as shipping is free)
-        document.addEventListener('DOMContentLoaded', () => {
-            const subtotalEl = document.getElementById('cartSubtotal');
-            const totalDisplayEl = document.getElementById('totalDisplay');
-
-            if (subtotalEl && totalDisplayEl) {
-                // Initial sync
-                totalDisplayEl.textContent = subtotalEl.textContent;
-
-                // Sync on change
-                const observer = new MutationObserver(() => {
-                    totalDisplayEl.textContent = subtotalEl.textContent;
-                });
-                observer.observe(subtotalEl, { childList: true });
-            }
-        });
-    </script>
 </body>
 
 </html>

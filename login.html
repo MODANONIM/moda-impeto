@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODA IMPETO | 管理者ログイン</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;700&family=Cinzel:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #000;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: rgba(25, 25, 25, 0.95);
+            border: 1px solid var(--color-gray-dark);
+            text-align: center;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: 'Bodoni Moda', serif;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--color-red);
+            color: white;
+            border: none;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .login-btn:hover {
+            opacity: 0.8;
+        }
+
+        .error-msg {
+            color: var(--color-red);
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2 style="margin-bottom: 30px; font-family: 'Cinzel', serif;">管理者ログイン</h2>
+        <div id="errorMsg" class="error-msg">ユーザー名またはパスワードが間違っています</div>
+        <form id="loginForm" class="login-form">
+            <input type="text" name="username" placeholder="ユーザー名" required>
+            <input type="password" name="password" placeholder="パスワード" required>
+            <button type="submit" class="login-btn">ログイン</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('adminToken', result.token);
+                    window.location.href = 'admin.html';
+                } else {
+                    const errorEl = document.getElementById('errorMsg');
+                    errorEl.textContent = 'ユーザー名またはパスワードが間違っています';
+                    errorEl.style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('ログインに失敗しました');
+            }
+        });
+    </script>
+</body>
+
+</html>

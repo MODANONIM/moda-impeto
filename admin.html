@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODA IMPETO | 管理ダッシュボード</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;700&family=Cinzel:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .admin-container {
+            padding: 100px 40px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-actions h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .product-form {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-form h2 {
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            color: #fff;
+            border-bottom: 2px solid var(--color-red);
+            padding-bottom: 15px;
+            display: inline-block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #aaa;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-red);
+            box-shadow: 0 0 20px rgba(180, 50, 50, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: #555;
+        }
+
+        .size-checkboxes {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 10px 0;
+        }
+
+        .size-checkboxes label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: none;
+            letter-spacing: 0;
+            color: #ccc;
+        }
+
+        .size-checkboxes label:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--color-red);
+        }
+
+        .size-checkboxes input[type="checkbox"]:checked+span,
+        .size-checkboxes label:has(input:checked) {
+            background: var(--color-red);
+            border-color: var(--color-red);
+            color: #fff;
+        }
+
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .product-list h2 {
+            grid-column: 1 / -1;
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--color-red);
+            padding-bottom: 15px;
+            display: inline-block;
+        }
+
+        .product-item {
+            background: linear-gradient(145deg, rgba(25, 25, 25, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .product-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .product-details {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .product-details h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .product-details p {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .product-details .product-id {
+            font-size: 0.75rem;
+            color: #555;
+            font-family: monospace;
+        }
+
+        .product-details .product-sizes {
+            color: var(--color-red);
+            font-weight: 500;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .edit-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+        }
+
+        .delete-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #b43232 0%, #8a2525 100%);
+            border: none;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #d43c3c 0%, #a02e2e 100%);
+            transform: scale(1.02);
+        }
+
+        .drop-zone {
+            width: 100%;
+            min-height: 180px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .drop-zone:hover {
+            border-color: var(--color-red);
+            background: rgba(180, 50, 50, 0.1);
+            color: #999;
+        }
+
+        .drop-zone.highlight {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .preview-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .preview-container img {
+            max-width: 100%;
+            max-height: 250px;
+            display: block;
+            margin: 0 auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        details {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        details summary {
+            cursor: pointer;
+            font-size: 1rem;
+            color: #ccc;
+            padding: 5px 0;
+        }
+
+        details[open] summary {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .empty-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 80px 20px 40px;
+            }
+
+            .header-actions h1 {
+                font-size: 1.8rem;
+            }
+
+            .product-form {
+                padding: 25px;
+            }
+
+            .product-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar__logo">
+                <a href="index.html"><img src="assets/logo.png" alt="MODA IMPETO"></a>
+            </div>
+            <nav class="admin-sidebar__nav">
+                <a href="admin.html" class="admin-sidebar__link active">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" />
+                    </svg>
+                    商品管理
+                </a>
+                <a href="orders.html" class="admin-sidebar__link">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2 4.5 3.5 3 2v20z" />
+                    </svg>
+                    注文管理
+                </a>
+                <a href="inventory.html" class="admin-sidebar__link">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z" />
+                    </svg>
+                    在庫管理
+                </a>
+                <a href="admin_users.html" class="admin-sidebar__link">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                    </svg>
+                    顧客管理
+                </a>
+            </nav>
+            <div class="admin-sidebar__footer">
+                <button class="admin-sidebar__logout" id="logoutBtn">ログアウト</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1 class="admin-header__title">商品管理</h1>
+                <p class="admin-header__subtitle">商品の追加・編集・削除を行います</p>
+            </header>
+
+            <details class="admin-card" style="margin-bottom: 30px;">
+                <summary style="cursor: pointer; color: var(--color-white); font-family: 'Cinzel', serif;">パスワード変更
+                </summary>
+                <form id="changePasswordForm" style="margin-top: 15px;">
+                    <div class="form-group">
+                        <input type="password" name="oldPassword" placeholder="現在のパスワード" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="newPassword" placeholder="新しいパスワード" required>
+                    </div>
+                    <button type="submit" class="admin-btn admin-btn--primary">パスワード更新</button>
+                </form>
+            </details>
+
+            <div class="product-form">
+                <h2 style="margin-bottom: 20px; font-family: 'Cinzel', serif;">新規商品追加</h2>
+                <form id="addProductForm">
+                    <div class="form-group">
+                        <label>商品名</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>価格 (¥)</label>
+                        <input type="number" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label>カテゴリー</label>
+                        <input type="text" name="category" placeholder="例: Jackets, Pants, T-Shirts" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>サイズ展開</label>
+                        <div class="size-checkboxes" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <label><input type="checkbox" name="sizes" value="XS"> XS</label>
+                            <label><input type="checkbox" name="sizes" value="S"> S</label>
+                            <label><input type="checkbox" name="sizes" value="M"> M</label>
+                            <label><input type="checkbox" name="sizes" value="L"> L</label>
+                            <label><input type="checkbox" name="sizes" value="XL"> XL</label>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload Zone -->
+                    <div class="form-group">
+                        <label>商品画像</label>
+                        <div id="dropZone" class="drop-zone">
+                            <p>画像をドラッグ＆ドロップ または クリックしてアップロード</p>
+                            <input type="file" id="fileInput" name="imageFile" accept="image/*" hidden>
+                            <input type="hidden" name="image" id="imageUrl">
+                        </div>
+                        <div id="previewContainer" class="preview-container" hidden>
+                            <img id="imagePreview" src="" alt="Preview">
+                            <button type="button" id="removeImageBtn" class="delete-btn"
+                                style="margin-top: 5px;">削除</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>商品説明</label>
+                        <textarea name="description" rows="4"></textarea>
+                    </div>
+                    <div class="form-actions" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <button type="submit" class="btn btn--primary">商品を追加</button>
+                        <button type="button" id="deleteProductBtn" class="btn delete-btn"
+                            style="display: none;">この商品を削除</button>
+                        <button type="button" id="cancelEditBtn" class="btn btn--outline"
+                            style="display: none;">キャンセル</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="product-list" id="productList">
+                <!-- Products will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = '/api/products';
+        let token = localStorage.getItem('adminToken');
+
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        async function fetchWithAuth(url, options = {}) {
+            const headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`
+            };
+            const res = await fetch(url, { ...options, headers });
+            if (res.status === 401 || res.status === 403) {
+                // Try to refresh token first
+                const refreshed = await refreshToken();
+                if (refreshed) {
+                    // Retry the original request with new token
+                    headers['Authorization'] = `Bearer ${token}`;
+                    return fetch(url, { ...options, headers });
+                } else {
+                    alert('セッションが期限切れです。再度ログインしてください。');
+                    localStorage.removeItem('adminToken');
+                    window.location.href = 'login.html';
+                }
+            }
+            return res;
+        }
+
+        // Token Auto-Refresh System
+        async function refreshToken() {
+            try {
+                const res = await fetch('/api/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    token = data.token;
+                    localStorage.setItem('adminToken', token);
+                    console.log('✓ Token refreshed successfully');
+                    return true;
+                }
+                return false;
+            } catch (err) {
+                console.error('Token refresh failed:', err);
+                return false;
+            }
+        }
+
+        // Schedule token refresh (every 30 minutes)
+        async function scheduleTokenRefresh() {
+            try {
+                const res = await fetch('/api/auth/verify', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    // Refresh 1 hour before expiration, or every 30 minutes minimum
+                    const refreshIn = Math.min(data.expiresIn - 3600, 1800) * 1000;
+                    if (refreshIn > 0) {
+                        setTimeout(async () => {
+                            await refreshToken();
+                            scheduleTokenRefresh();
+                        }, refreshIn);
+                        console.log(`Next token refresh in ${Math.round(refreshIn / 1000 / 60)} minutes`);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to schedule token refresh:', err);
+            }
+        }
+
+        // Start auto-refresh when page loads
+        scheduleTokenRefresh();
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const imageUrlInput = document.getElementById('imageUrl');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+
+
+        // Initial Load
+        loadProducts();
+
+        /* ===============================================
+           Product Management
+           =============================================== */
+        async function loadProducts() {
+            try {
+                const res = await fetch(API_URL);
+                const products = await res.json();
+                const container = document.getElementById('productList');
+
+                if (products.length === 0) {
+                    container.innerHTML = '<p>商品がありません。</p>';
+                    return;
+                }
+
+                container.innerHTML = products.map(p => `
+                    <div class="product-item">
+                        <img src="${p.image}" alt="${p.name}" loading="lazy">
+                        <div class="product-details">
+                            <h3>${p.name}</h3>
+                            <p>¥${p.price.toLocaleString()} | ${p.category}</p>
+                            <p class="product-id">ID: ${p.id} (_id: ${p._id})</p>
+                            <p class="product-sizes">Sizes: ${p.sizes && p.sizes.length > 0 ? p.sizes.join(', ') : 'Free'}</p>
+                        </div>
+                        <div class="product-actions">
+                            <button class="edit-btn" data-id="${p._id} || ${p.id}">編集</button>
+                            <button class="delete-btn" data-id="${p._id}">削除</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Re-attach event listeners for edit buttons
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        // prioritize _id over id if available, but handle both
+                        const id = btn.dataset.id.split(' || ')[0].trim();
+                        editProduct(id);
+                    });
+                });
+            } catch (err) {
+                console.error('Error loading products:', err);
+            }
+        }
+
+        // Add New Product
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            // Collect selected sizes
+            const selectedSizes = Array.from(document.querySelectorAll('input[name="sizes"]:checked'))
+                .map(cb => cb.value);
+
+            const productData = {
+                name: formData.get('name'),
+                price: formData.get('price'),
+                category: formData.get('category'),
+                description: formData.get('description'),
+                image: document.getElementById('imageUrl').value,
+                sizes: selectedSizes
+            };
+
+            const token = localStorage.getItem('adminToken');
+            const isEditMode = e.target.getAttribute('data-mode') === 'edit';
+            const productId = e.target.getAttribute('data-id');
+
+            const url = isEditMode ? `${API_URL}/${productId}` : API_URL;
+            const method = isEditMode ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetchWithAuth(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData)
+                });
+
+                if (res.ok) {
+                    alert(isEditMode ? '商品を更新しました' : '商品を追加しました');
+                    e.target.reset();
+                    e.target.removeAttribute('data-mode');
+                    e.target.removeAttribute('data-id');
+                    document.querySelector('#addProductForm button[type="submit"]').textContent = '商品を追加';
+                    document.getElementById('imagePreview').src = '';
+                    document.getElementById('previewContainer').hidden = true;
+                    // Reset checkboxes
+                    document.querySelectorAll('input[name="sizes"]').forEach(cb => cb.checked = false);
+                    loadProducts();
+                } else {
+                    const data = await res.json();
+                    alert('エラー: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('通信エラーが発生しました');
+            }
+        });
+
+        // Edit Product
+        async function editProduct(id) {
+            try {
+                const res = await fetch(`${API_URL}/${id}`);
+                if (!res.ok) throw new Error('Product not found');
+                const product = await res.json();
+
+                // Populate Form
+                const form = document.getElementById('addProductForm');
+                form.querySelector('[name="name"]').value = product.name;
+                form.querySelector('[name="price"]').value = product.price;
+                form.querySelector('[name="category"]').value = product.category;
+                form.querySelector('[name="description"]').value = product.description;
+                document.getElementById('imageUrl').value = product.image;
+
+                if (product.image) {
+                    document.getElementById('imagePreview').src = product.image;
+                    document.getElementById('previewContainer').hidden = false;
+                }
+
+                // Populate Sizes
+                const sizes = product.sizes || [];
+                document.querySelectorAll('input[name="sizes"]').forEach(cb => {
+                    cb.checked = sizes.includes(cb.value);
+                });
+
+                // Set Edit Mode
+                form.setAttribute('data-mode', 'edit');
+                form.setAttribute('data-id', product._id); // Use _id for updates
+                form.querySelector('button[type="submit"]').textContent = '商品を更新';
+
+                // Show delete and cancel buttons
+                document.getElementById('deleteProductBtn').style.display = 'inline-block';
+                document.getElementById('cancelEditBtn').style.display = 'inline-block';
+
+                // Update form title
+                document.querySelector('.product-form h2').textContent = '商品を編集';
+
+                // Scroll to form
+                form.scrollIntoView({ behavior: 'smooth' });
+            } catch (err) {
+                console.error(err);
+                alert('商品情報の取得に失敗しました');
+            }
+        }
+
+        // Cancel Edit function
+        function cancelEdit() {
+            const form = document.getElementById('addProductForm');
+            form.reset();
+            form.removeAttribute('data-mode');
+            form.removeAttribute('data-id');
+            form.querySelector('button[type="submit"]').textContent = '商品を追加';
+            document.getElementById('deleteProductBtn').style.display = 'none';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            document.getElementById('previewContainer').hidden = true;
+            document.querySelector('.product-form h2').textContent = '新規商品追加';
+
+            // Uncheck all size checkboxes
+            document.querySelectorAll('input[name="sizes"]').forEach(cb => {
+                cb.checked = false;
+            });
+        }
+
+        // Cancel Edit Button Handler
+        document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+
+        // Delete Product Button Handler (inside form) - with confirmation
+        document.getElementById('deleteProductBtn').addEventListener('click', async () => {
+            const form = document.getElementById('addProductForm');
+            const id = form.getAttribute('data-id');
+            if (!id) return;
+
+            // First confirmation
+            if (!confirm('この商品を削除しますか？')) return;
+
+            // Second confirmation
+            if (!confirm('本当に削除してよろしいですか？この操作は取り消しできません。')) return;
+
+            try {
+                const res = await fetchWithAuth(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    alert('商品を削除しました');
+                    cancelEdit();
+                    loadProducts();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+        // Delete Product from Card - with confirmation
+        document.getElementById('productList').addEventListener('click', async (e) => {
+            const btn = e.target.closest('.delete-btn');
+            if (btn) {
+                const id = btn.dataset.id;
+
+                // First confirmation
+                if (!confirm('この商品を削除しますか？')) return;
+
+                // Second confirmation
+                if (!confirm('本当に削除してよろしいですか？この操作は取り消しできません。')) return;
+
+                try {
+                    const res = await fetchWithAuth(`${API_URL}/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        alert('商品を削除しました');
+                        loadProducts();
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        });
+
+        // Drag and Drop Logic
+
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleFile(files[0]);
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) handleFile(fileInput.files[0]);
+        });
+
+        async function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('画像ファイルを選択してください');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('imageUrl').value = data.filePath; // Changed from data.imageUrl to data.filePath based on original uploadFile
+                    document.getElementById('imagePreview').src = data.filePath;
+                    document.getElementById('previewContainer').hidden = false;
+                    dropZone.hidden = true; // Added to hide dropZone after successful upload
+                } else {
+                    alert('画像のアップロードに失敗しました');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('アップロードエラート');
+            }
+        }
+
+        document.getElementById('removeImageBtn').addEventListener('click', () => {
+            document.getElementById('imageUrl').value = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('imagePreview').src = '';
+            document.getElementById('previewContainer').hidden = true;
+            dropZone.hidden = false; // Added to show dropZone after removing image
+            dropZone.querySelector('p').textContent = '画像をドラッグ＆ドロップ または クリックしてアップロード'; // Reset text
+        });
+
+        /* ===============================================
+           Logout Logic
+           =============================================== */
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'login.html';
+        });
+        // Password Change Logic
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+
+            btn.disabled = true;
+            btn.textContent = '更新中...';
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const res = await fetchWithAuth('/api/auth/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    alert('パスワードを変更しました');
+                    e.target.reset();
+                    e.target.closest('details').removeAttribute('open');
+                } else {
+                    alert('エラー: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('通信エラーが発生しました');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+    </script>
+</body>
+
+</html>

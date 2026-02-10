@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODA IMPETO | 在庫管理</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;700&family=Cinzel:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .admin-container {
+            padding: 100px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .inventory-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .inventory-item {
+            background: #111;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #333;
+            transition: border-color 0.3s;
+        }
+
+        .inventory-item.sold-out {
+            border-color: var(--color-red);
+            opacity: 0.7;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .product-info img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--color-green);
+            /* In Stock color */
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: var(--color-red);
+            /* Sold Out color */
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        .status-label {
+            margin-left: 10px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar__logo">
+                <a href="index.html"><img src="assets/logo.png" alt="MODA IMPETO"></a>
+            </div>
+            <nav class="admin-sidebar__nav">
+                <a href="admin.html" class="admin-sidebar__link">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" />
+                    </svg>
+                    商品管理
+                </a>
+                <a href="orders.html" class="admin-sidebar__link">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2 4.5 3.5 3 2v20z" />
+                    </svg>
+                    注文管理
+                </a>
+                <a href="inventory.html" class="admin-sidebar__link active">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z" />
+                    </svg>
+                    在庫管理
+                </a>
+                <a href="admin_users.html" class="admin-sidebar__link">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                    </svg>
+                    顧客管理
+                </a>
+            </nav>
+            <div class="admin-sidebar__footer">
+                <button class="admin-sidebar__logout" id="logoutBtn">ログアウト</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1 class="admin-header__title">在庫管理</h1>
+                <p class="admin-header__subtitle">商品の在庫状況を管理します</p>
+            </header>
+
+            <div class="inventory-list" id="inventoryList">
+                <div class="loading">Loading inventory...</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = '/api/products';
+        let token = localStorage.getItem('adminToken');
+
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Auth Logic
+        async function fetchWithAuth(url, options = {}) {
+            const headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`
+            };
+            const res = await fetch(url, { ...options, headers });
+            if (res.status === 401 || res.status === 403) {
+                const refreshed = await refreshToken();
+                if (refreshed) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                    return fetch(url, { ...options, headers });
+                } else {
+                    alert('セッションが期限切れです。再度ログインしてください。');
+                    localStorage.removeItem('adminToken');
+                    window.location.href = 'login.html';
+                }
+            }
+            return res;
+        }
+
+        async function refreshToken() {
+            try {
+                const res = await fetch('/api/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    token = data.token;
+                    localStorage.setItem('adminToken', token);
+                    return true;
+                }
+                return false;
+            } catch (err) {
+                return false;
+            }
+        }
+
+        // Schedule token refresh
+        async function scheduleTokenRefresh() {
+            try {
+                const res = await fetch('/api/auth/verify', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) {
+                    const data = await res.json();
+                    const refreshIn = Math.min(data.expiresIn - 3600, 1800) * 1000;
+                    if (refreshIn > 0) {
+                        setTimeout(async () => {
+                            await refreshToken();
+                            scheduleTokenRefresh();
+                        }, refreshIn);
+                    }
+                }
+            } catch (err) { console.error(err); }
+        }
+        scheduleTokenRefresh();
+
+        // Load Products
+        async function loadInventory() {
+            try {
+                const res = await fetch(API_URL);
+                const products = await res.json();
+                const container = document.getElementById('inventoryList');
+
+                if (products.length === 0) {
+                    container.innerHTML = '<p>商品がありません。</p>';
+                    return;
+                }
+
+                container.innerHTML = products.map(p => `
+                    <div class="inventory-item ${p.isSoldOut ? 'sold-out' : ''}">
+                        <div class="product-info">
+                            <img src="${p.image}" alt="${p.name}">
+                            <div>
+                                <h3 style="margin: 0 0 5px 0;">${p.name}</h3>
+                                <p style="color: var(--color-gray); margin: 0;">¥${p.price.toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <label class="switch">
+                                <input type="checkbox" onchange="toggleStock('${p._id}', this)" ${p.isSoldOut ? 'checked' : ''}>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="status-label" style="color: ${p.isSoldOut ? 'var(--color-red)' : 'var(--color-green)'}">
+                                ${p.isSoldOut ? 'SOLD OUT' : 'IN STOCK'}
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+                document.getElementById('inventoryList').innerHTML = '<p>読み込みに失敗しました。</p>';
+            }
+        }
+
+        // Toggle Stock Status
+        async function toggleStock(id, checkbox) {
+            const isSoldOut = checkbox.checked;
+            const itemDiv = checkbox.closest('.inventory-item');
+            const statusLabel = itemDiv.querySelector('.status-label');
+
+            try {
+                const res = await fetchWithAuth(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isSoldOut: isSoldOut })
+                });
+
+                if (res.ok) {
+                    // Update UI
+                    if (isSoldOut) {
+                        itemDiv.classList.add('sold-out');
+                        statusLabel.textContent = 'SOLD OUT';
+                        statusLabel.style.color = 'var(--color-red)';
+                    } else {
+                        itemDiv.classList.remove('sold-out');
+                        statusLabel.textContent = 'IN STOCK';
+                        statusLabel.style.color = 'var(--color-green)';
+                    }
+                } else {
+                    const data = await res.json();
+                    alert('更新に失敗しました: ' + data.message);
+                    checkbox.checked = !isSoldOut; // Revert
+                }
+            } catch (err) {
+                console.error(err);
+                alert('通信エラーが発生しました');
+                checkbox.checked = !isSoldOut; // Revert
+            }
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'login.html';
+        });
+
+        loadInventory();
+    </script>
+</body>
+
+</html>
