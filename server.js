@@ -4,10 +4,15 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 
+const helmet = require('helmet');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+app.use(helmet({
+    contentSecurityPolicy: false, // Disabled for simplicity with external scripts (Stripe/PayPal)
+}));
 app.use(cors());
 
 // Stripe webhook needs raw body for signature verification
@@ -19,7 +24,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '/')));
 
 // Database Connection
-mongoose.connect('mongodb://127.0.0.1:27017/moda_impeto?directConnection=true')
+// Use environment variable for MongoDB connection, fallback to local DB for development
+const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/moda_impeto?directConnection=true';
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(async () => {
         console.log('MongoDB Connected');
         // Create Default Admin
