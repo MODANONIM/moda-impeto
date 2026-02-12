@@ -428,7 +428,8 @@
                         <div class="order-header" onclick="toggleDetails('${order._id}')">
                             <div>
                                 <strong>注文番号: #${order.orderId || order._id.slice(-6).toUpperCase()}</strong>
-                                <span style="margin-left: 10px; color: var(--color-gray);">${date}</span>
+                                <div style="color: var(--color-white); font-size: 0.9rem; margin: 4px 0;">${order.customer.email}</div>
+                                <span style="font-size: 0.85rem; color: var(--color-gray);">${date}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 15px;">
                                 <span>¥${order.totalAmount.toLocaleString()}</span>
