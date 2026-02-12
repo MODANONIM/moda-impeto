@@ -455,6 +455,7 @@
                                         <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>配達完了</option>
                                         <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>キャンセル</option>
                                     </select>
+                                    <button onclick="deleteOrder('${order._id}')" style="margin-top: 15px; width: 100%; background: #ff4444; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px;">注文を削除</button>
                                 </div>
                             </div>
                             
@@ -478,6 +479,27 @@
                 `;
             }).join('');
         }
+
+        window.deleteOrder = async (id) => {
+            if (!confirm('この注文を削除してもよろしいですか？この操作は取り消せません。')) return;
+
+            try {
+                const res = await fetchWithAuth(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (res.ok) {
+                    alert('注文を削除しました');
+                    loadOrders(); // Reload list
+                } else {
+                    const data = await res.json();
+                    alert('削除に失敗しました: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('通信エラーが発生しました');
+            }
+        };
 
         loadOrders();
     </script>

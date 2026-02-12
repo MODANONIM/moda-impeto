@@ -225,6 +225,17 @@ router.put('/orders/:id/status', auth, async (req, res) => {
     }
 });
 
+// DELETE /api/orders/:id - Delete order (Admin only)
+router.delete('/orders/:id', auth, async (req, res) => {
+    try {
+        const order = await Order.findByIdAndDelete(req.params.id);
+        if (!order) return res.status(404).json({ message: '注文が見つかりません' });
+        res.json({ message: '注文を削除しました' });
+    } catch (err) {
+        res.status(500).json({ message: '注文の削除に失敗しました' });
+    }
+});
+
 // POST /api/my-orders - Get orders by IDs (Public)
 router.post('/my-orders', async (req, res) => {
     try {
