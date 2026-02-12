@@ -3,8 +3,9 @@
    =============================================== */
 
 // Product Database (will be loaded from API)
-let PRODUCTS = {};
-const API_URL = '/api';
+// Product Database (will be loaded from API)
+var PRODUCTS = PRODUCTS || {};
+var API_URL = '/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
@@ -216,7 +217,27 @@ function renderCart() {
     let subtotal = 0;
     cartContainer.innerHTML = items.map(item => {
         const product = PRODUCTS[item.id];
-        if (!product) return ''; // Skip if product not found
+
+        // Handle missing products (e.g. deleted from DB)
+        if (!product) {
+            return `
+            <div class="cart-item fade-in visible error-item">
+                <div class="cart-item__image">
+                    <div style="width: 100px; height: 100px; background: #333; display: flex; align-items: center; justify-content: center; color: #666;">
+                        N/A
+                    </div>
+                </div>
+                <div class="cart-item__details">
+                    <h3 class="cart-item__name" style="color: #ff4444;">Product Unavailable</h3>
+                    <p class="cart-item__price">¥0</p>
+                    <p class="cart-item__size">Size: ${item.size || '-'}</p>
+                    <div class="cart-item__actions">
+                        <button class="remove-btn" onclick="removeFromCart('${item.id}')">Remove</button>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
 
         const itemTotal = product.price * item.quantity;
         subtotal += itemTotal;
@@ -511,9 +532,9 @@ async function saveOrderToBackend(orderData) {
 /* ===============================================
    Checkout Logic with Stripe
    =============================================== */
-let stripe;
-let elements;
-let cardElement;
+var stripe;
+var elements;
+var cardElement;
 
 async function initCheckout() {
     const checkoutForm = document.getElementById('checkoutForm');
