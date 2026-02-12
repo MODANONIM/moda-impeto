@@ -215,7 +215,7 @@ function renderCart() {
     }
 
     let subtotal = 0;
-    cartContainer.innerHTML = items.map(item => {
+    cartContainer.innerHTML = Object.entries(cart).map(([key, item]) => {
         const product = PRODUCTS[item.id];
 
         // Handle missing products (e.g. deleted from DB)
@@ -232,7 +232,7 @@ function renderCart() {
                     <p class="cart-item__price">¥0</p>
                     <p class="cart-item__size">Size: ${item.size || '-'}</p>
                     <div class="cart-item__actions">
-                        <button class="remove-btn" onclick="removeFromCart('${item.id}')">Remove</button>
+                        <button class="remove-btn" onclick="removeFromCart('${key}')">Remove</button>
                     </div>
                 </div>
             </div>
@@ -253,11 +253,11 @@ function renderCart() {
                 <p class="cart-item__size">Size: ${item.size || 'M'}</p>
                 <div class="cart-item__actions">
                     <div class="quantity-controls">
-                        <button onclick="updateQuantity('${item.id}', -1)">-</button>
+                        <button onclick="updateQuantity('${key}', -1)">-</button>
                         <span>${item.quantity}</span>
-                        <button onclick="updateQuantity('${item.id}', 1)">+</button>
+                        <button onclick="updateQuantity('${key}', 1)">+</button>
                     </div>
-                    <button class="remove-btn" onclick="removeFromCart('${item.id}')">Remove</button>
+                    <button class="remove-btn" onclick="removeFromCart('${key}')">Remove</button>
                 </div>
             </div>
         </div>
