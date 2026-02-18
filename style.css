@@ -323,7 +323,7 @@ p {
 .hero__logo {
   width: min(400px, 70vw);
   margin: 0 auto var(--space-lg);
-  animation: logoReveal 1.5s var(--transition-luxury) forwards;
+  animation: logoReveal 1.5s var(--transition-luxury) forwards, logoGlowLoop 4s ease-in-out 1.5s infinite;
   filter: drop-shadow(var(--shadow-glow-red));
 }
 
@@ -336,6 +336,23 @@ p {
   100% {
     opacity: 1;
     transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes logoGlowLoop {
+  0% {
+    filter: drop-shadow(0 0 15px rgba(196, 30, 58, 0.4));
+    transform: scale(1);
+  }
+
+  50% {
+    filter: drop-shadow(0 0 35px rgba(196, 30, 58, 0.9));
+    transform: scale(1.03);
+  }
+
+  100% {
+    filter: drop-shadow(0 0 15px rgba(196, 30, 58, 0.4));
+    transform: scale(1);
   }
 }
 
