@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-const basicAuth = require('express-basic-auth');
+
 
 // MongoDB Connection
 console.log('Attempting to connect to MongoDB...');
@@ -31,22 +31,7 @@ app.use(helmet({
 app.use(cors());
 
 // Basic Auth for Admin Routes
-// Basic Auth for Admin Routes
-const adminAuth = basicAuth({
-    users: { [process.env.BASIC_AUTH_USER || 'admin']: process.env.BASIC_AUTH_PASS || 'supersecret' },
-    challenge: true,
-    realm: 'Moda Impeto Admin Area'
-});
 
-const adminPaths = [
-    '/admin',
-    '/admin.html',
-    '/orders.html',
-    '/inventory.html',
-    '/admin_users.html'
-];
-
-app.use(adminPaths, adminAuth);
 
 app.use(express.json());
 app.use(express.static(__dirname));
