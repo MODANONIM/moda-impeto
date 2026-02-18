@@ -173,14 +173,68 @@ p {
   box-shadow: var(--shadow-md);
 }
 
+/* ... previous styles ... */
+
 .nav__logo {
-  height: 50px;
+  height: 40px;
+  /* Default for mobile */
   transition: var(--transition-normal);
 }
 
 .nav__logo:hover {
   filter: drop-shadow(var(--shadow-glow-red));
   transform: scale(1.05);
+}
+
+/* ... other styles ... */
+
+@media (max-width: 768px) {
+  .nav {
+    justify-content: space-between;
+    /* Keep toggle and icons on sides */
+    position: fixed;
+    /* Ensure it stays fixed */
+  }
+
+  /* Center the logo on mobile */
+  .nav__logo-link {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .nav__logo {
+    height: 35px;
+    /* Slightly smaller on mobile if needed, or keep 40 */
+  }
+
+  .nav__links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-xl) 0;
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    /* Hidden state */
+    transition: clip-path 0.4s ease-in-out;
+  }
+
+  .nav__links.active {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    /* Visible state */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+@media (min-width: 769px) {
+  .nav__logo {
+    height: 60px;
+    /* Larger on desktop */
+  }
 }
 
 .nav__cart {
