@@ -196,16 +196,27 @@ p {
     /* Ensure it stays fixed */
   }
 
-  /* Center the logo on mobile */
+  /* Hide the hamburger menu as requested */
+  .nav__toggle {
+    display: none !important;
+  }
+
+  /* Reset logo alignment to default (Left) */
   .nav__logo-link {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    position: static;
+    transform: none;
+    margin-right: auto;
+    /* Ensures it stays left if needed */
   }
 
   .nav__logo {
     height: 35px;
     /* Slightly smaller on mobile if needed, or keep 40 */
+  }
+
+  /* Hide navigation links completely on mobile since menu is gone */
+  .nav__links {
+    display: none !important;
   }
 
   .nav__links {
