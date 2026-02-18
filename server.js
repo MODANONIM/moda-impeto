@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const Admin = require('./models/Admin');
+const bcrypt = require('bcryptjs');
 
 const helmet = require('helmet');
 
@@ -15,8 +17,35 @@ const basicAuth = require('express-basic-auth');
 // MongoDB Connection
 console.log('Attempting to connect to MongoDB...');
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/moda_impeto')
-    .then(() => console.log('MongoDB Connected'))
+    .then(() => {
+        console.log('MongoDB Connected');
+        seedAdmin();
+    })
     .catch(err => console.error('MongoDB Connection Error:', err));
+
+const Admin = require('./models/Admin');
+const bcrypt = require('bcryptjs');
+
+async function seedAdmin() {
+    try {
+        const adminCount = await Admin.countDocuments();
+        if (adminCount === 0) {
+            console.log('No admin found. Seeding default admin...');
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash('password123', salt);
+            const admin = new Admin({
+                username: 'admin',
+                password: hashedPassword
+            });
+            await admin.save();
+            console.log('Default admin created: admin / password123');
+        } else {
+            console.log('Admin already exists. Skipping seed.');
+        }
+    } catch (err) {
+        console.error('Admin seeding failed:', err);
+    }
+}
 
 app.use(helmet({
     contentSecurityPolicy: false, // Disabled for simplicity with external scripts (Stripe/PayPal)
@@ -57,6 +86,27 @@ app.use('/api', uploadRoutes);
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+async function seedAdmin() {
+    try {
+        const adminCount = await Admin.countDocuments();
+        if (adminCount === 0) {
+            console.log('No admin found. Seeding default admin...');
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash('password123', salt);
+            const admin = new Admin({
+                username: 'admin',
+                password: hashedPassword
+            });
+            await admin.save();
+            console.log('Default admin created: admin / password123');
+        } else {
+            console.log('Admin already exists. Skipping seed.');
+        }
+    } catch (err) {
+        console.error('Admin seeding failed:', err);
+    }
+}
 
 // Start Server
 app.listen(PORT, () => {
