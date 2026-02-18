@@ -366,24 +366,44 @@ function initPayPal() {
             shape: 'rect',
             label: 'paypal'
         },
-        createOrder: function (data, actions) {
-            // Validate form first
-            const email = document.getElementById('email').value;
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const address = document.getElementById('address').value;
-            const city = document.getElementById('city').value;
-            const state = document.getElementById('state').value;
-            const zipCode = document.getElementById('zipCode').value;
+        onInit: function (data, actions) {
+            actions.disable(); // Disable by default
 
-            if (!email || !firstName || !lastName || !address || !city || !state || !zipCode) {
+            const form = document.getElementById('checkoutForm');
+
+            const validateForm = () => {
+                const email = document.getElementById('email').value;
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const address = document.getElementById('address').value;
+                const city = document.getElementById('city').value;
+                const state = document.getElementById('state').value;
+                const zipCode = document.getElementById('zipCode').value;
+                const phone = document.getElementById('phone').value;
+
+                if (email && firstName && lastName && address && city && state && zipCode && phone) {
+                    actions.enable();
+                } else {
+                    actions.disable();
+                }
+            };
+
+            // Add listeners to all inputs
+            form.querySelectorAll('input, select').forEach(item => {
+                item.addEventListener('change', validateForm);
+                item.addEventListener('keyup', validateForm);
+            });
+        },
+        onClick: function (data, actions) {
+            // Backup validation
+            const form = document.getElementById('checkoutForm');
+            if (!form.checkValidity()) {
                 showToast('配送先情報をすべて入力してください。');
-                // Scroll to top of form to show missing fields
-                const form = document.getElementById('checkoutForm');
-                if (form) form.scrollIntoView({ behavior: 'smooth' });
-                return Promise.reject(new Error('Missing required fields'));
+                return actions.reject();
             }
-
+            return actions.resolve();
+        },
+        createOrder: function (data, actions) {
             // Calculate total
             const cartKey = getCartKey();
             let cart = JSON.parse(localStorage.getItem(cartKey)) || {};
@@ -395,6 +415,7 @@ function initPayPal() {
 
             if (subtotal <= 0) {
                 showToast('カートが空か、商品情報の読み込みに失敗しました。');
+                // This might still happen if cart was cleared in another tab, but unlikely
                 return Promise.reject(new Error('Invalid subtotal'));
             }
 
