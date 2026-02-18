@@ -127,7 +127,7 @@
 @media (max-width: 1024px) {
     .product-grid {
         grid-template-columns: 1fr;
-        gap: var(--space-xl);
+        gap: var(--space-lg);
     }
 
     .product-info {
@@ -136,5 +136,38 @@
 
     .add-to-cart-btn {
         max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-page {
+        padding-top: calc(var(--space-lg) + 60px);
+        padding-left: var(--space-sm);
+        padding-right: var(--space-sm);
+    }
+
+    .product-grid {
+        gap: var(--space-md);
+    }
+
+    .product-name {
+        font-size: clamp(1.4rem, 5vw, 2rem);
+    }
+
+    .product-price {
+        font-size: 1.4rem;
+        margin-bottom: var(--space-md);
+    }
+
+    .add-to-cart-btn {
+        padding: var(--space-sm) 0;
+    }
+
+    .product-description {
+        margin-bottom: var(--space-md);
+    }
+
+    .product-description p {
+        font-size: 0.95rem;
     }
 }
