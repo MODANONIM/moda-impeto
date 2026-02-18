@@ -197,7 +197,6 @@
 </head>
 
 <body>
-    <script src="assets/admin-auth.js"></script>
     <div class="admin-layout">
         <!-- Sidebar -->
         <aside class="admin-sidebar">
@@ -264,7 +263,68 @@
 
     <script>
         const API_URL = '/api/orders';
-        // Auth is handled by admin-auth.js
+        let token = localStorage.getItem('adminToken');
+
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        async function fetchWithAuth(url, options = {}) {
+            const headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`
+            };
+            const res = await fetch(url, { ...options, headers });
+            if (res.status === 401 || res.status === 403) {
+                const refreshed = await refreshToken();
+                if (refreshed) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                    return fetch(url, { ...options, headers });
+                } else {
+                    alert('セッションが期限切れです。再度ログインしてください。');
+                    localStorage.removeItem('adminToken');
+                    window.location.href = 'login.html';
+                }
+            }
+            return res;
+        }
+
+        async function refreshToken() {
+            try {
+                const res = await fetch('/api/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    token = data.token;
+                    localStorage.setItem('adminToken', token);
+                    return true;
+                }
+                return false;
+            } catch (err) {
+                return false;
+            }
+        }
+
+        async function scheduleTokenRefresh() {
+            try {
+                const res = await fetch('/api/auth/verify', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const refreshIn = Math.min(data.expiresIn - 3600, 1800) * 1000;
+                    if (refreshIn > 0) {
+                        setTimeout(async () => {
+                            await refreshToken();
+                            scheduleTokenRefresh();
+                        }, refreshIn);
+                    }
+                }
+            } catch (err) { }
+        }
+        scheduleTokenRefresh();
 
         async function loadOrders() {
             try {
@@ -314,7 +374,10 @@
             }
         };
 
-        // logoutBtn listener is handled by admin-auth.js if ID matches
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'login.html';
+        });
 
         // Store all orders for filtering
         let allOrders = [];
@@ -392,7 +455,6 @@
                                         <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>配達完了</option>
                                         <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>キャンセル</option>
                                     </select>
-                                    <button onclick="deleteOrder('${order._id}')" style="margin-top: 15px; width: 100%; background: #ff4444; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px;">注文を削除</button>
                                 </div>
                             </div>
                             
@@ -416,27 +478,6 @@
                 `;
             }).join('');
         }
-
-        window.deleteOrder = async (id) => {
-            if (!confirm('この注文を削除してもよろしいですか？この操作は取り消せません。')) return;
-
-            try {
-                const res = await fetchWithAuth(`${API_URL}/${id}`, {
-                    method: 'DELETE'
-                });
-
-                if (res.ok) {
-                    alert('注文を削除しました');
-                    loadOrders(); // Reload list
-                } else {
-                    const data = await res.json();
-                    alert('削除に失敗しました: ' + data.message);
-                }
-            } catch (err) {
-                console.error(err);
-                alert('通信エラーが発生しました');
-            }
-        };
 
         loadOrders();
     </script>

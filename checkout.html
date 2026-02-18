@@ -20,9 +20,6 @@
     <link rel="stylesheet" href="checkout.css">
     <link rel="stylesheet" href="checkout_payment.css">
 
-    <!-- Stripe.js -->
-    <script src="https://js.stripe.com/v3/"></script>
-
 </head>
 
 <body>
@@ -164,52 +161,11 @@
                         <div class="form-group">
                             <h2 class="form-section-title">Payment</h2>
 
-                            <!-- Payment Selection -->
-                            <div class="payment-selection">
-                                <label class="payment-option">
-                                    <input type="radio" name="paymentMethod" value="stripe" checked
-                                        onchange="togglePaymentMethod()">
-                                    <span class="payment-option-label">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                                            <line x1="1" y1="10" x2="23" y2="10"></line>
-                                        </svg>
-                                        Credit Card
-                                    </span>
-                                </label>
-                                <label class="payment-option">
-                                    <input type="radio" name="paymentMethod" value="paypal"
-                                        onchange="togglePaymentMethod()">
-                                    <span class="payment-option-label">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M7.11 3.24L3.29 21h13.29L20.7 3.24H7.11z"></path>
-                                        </svg>
-                                        PayPal
-                                    </span>
-                                </label>
-                            </div>
-
-                            <!-- Stripe -->
-                            <div id="stripe-section">
-                                <div id="card-element" class="stripe-card-element">
-                                    <!-- Stripe Elements will be inserted here -->
-                                </div>
-                                <div id="card-errors" class="stripe-card-errors" role="alert"></div>
-                            </div>
-
-                            <!-- PayPal -->
-                            <div id="paypal-section" style="display: none; margin-top: 20px;">
+                            <!-- Only PayPal available now -->
+                            <div id="paypal-section" style="margin-top: 20px;">
                                 <div id="paypal-button-container"></div>
                             </div>
                         </div>
-
-                        <button type="submit" class="btn btn--primary checkout-submit-btn" id="placeOrderBtn">
-                            PLACE ORDER
-                        </button>
                     </form>
                 </div>
 

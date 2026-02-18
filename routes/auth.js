@@ -9,24 +9,51 @@ const auth = require('../middleware/auth');
 // LOGIN
 router.post('/login', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, secretCode } = req.body;
 
         const admin = await Admin.findOne({ username });
         if (!admin) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
+        // 1. Check if account is locked
+        if (admin.lockUntil && admin.lockUntil > Date.now()) {
+            return res.status(403).json({ message: 'Account is locked. Try again later.' });
+        }
+
+        // 2. Check Secret Code
+        if (secretCode !== 'admin123') {
+            await handleFailedLogin(admin);
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // 3. Check Password
         const isMatch = await bcrypt.compare(password, admin.password);
+        if (!isMatch) {
+            await handleFailedLogin(admin);
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
 
-        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+        // Success: Reset attempts
+        admin.loginAttempts = 0;
+        admin.lockUntil = undefined;
+        await admin.save();
 
-        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET || 'secretKey', { expiresIn: '24h' });
+        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET || 'secretKey', { expiresIn: '20m' });
         res.json({ token, user: { id: admin._id, username: admin.username } });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
+
+async function handleFailedLogin(admin) {
+    admin.loginAttempts += 1;
+    if (admin.loginAttempts >= 6) {
+        admin.lockUntil = Date.now() + 24 * 60 * 60 * 1000; // Lock for 24 hours
+    }
+    await admin.save();
+}
 
 // CHANGE PASSWORD
 router.post('/change-password', auth, async (req, res) => {
@@ -55,8 +82,8 @@ router.post('/refresh', auth, async (req, res) => {
             return res.status(401).json({ message: 'User not found' });
         }
 
-        // Issue new token with fresh expiration (24h)
-        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET || 'secretKey', { expiresIn: '24h' });
+        // Issue new token with fresh expiration (20m)
+        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET || 'secretKey', { expiresIn: '20m' });
         res.json({ token, user: { id: admin._id, username: admin.username } });
     } catch (err) {
         console.error('Token refresh error:', err);
@@ -132,7 +159,7 @@ router.post('/user-login', async (req, res) => {
         const token = jwt.sign(
             { id: user._id, role: 'user' },
             process.env.JWT_SECRET,
-            { expiresIn: '24h' }
+            { expiresIn: '20m' }
         );
 
         res.json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName } });

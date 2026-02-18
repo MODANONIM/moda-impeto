@@ -4,7 +4,7 @@ const Product = require('../models/Product');
 const Order = require('../models/Order');
 const User = require('../models/User'); // Import User model
 const auth = require('../middleware/auth');
-const { sendOrderConfirmation } = require('../utils/email');
+const { sendOrderConfirmation, sendOrderShipped } = require('../utils/email');
 
 // ==========================================
 // Config Routes
@@ -13,7 +13,6 @@ const { sendOrderConfirmation } = require('../utils/email');
 // GET /api/config - Get public configuration
 router.get('/config', (req, res) => {
     res.json({
-        stripePublicKey: process.env.STRIPE_PUBLIC_KEY,
         paypalClientId: process.env.PAYPAL_CLIENT_ID
     });
 });
@@ -217,10 +216,22 @@ router.put('/orders/:id/status', auth, async (req, res) => {
         const order = await Order.findById(req.params.id);
         if (!order) return res.status(404).json({ message: '注文が見つかりません' });
 
+        const oldStatus = order.status;
         order.status = status;
-        await order.save();
-        res.json(order);
+        const updatedOrder = await order.save();
+
+        // Send Email if status changed to Shipped
+        if (status === 'Shipped' && oldStatus !== 'Shipped') {
+            // Import on demand or ensure it's imported at top.
+            // It is imported at top as: const { sendOrderConfirmation } = require('../utils/email');
+            // I need to update the import to include sendOrderShipped
+            const { sendOrderShipped } = require('../utils/email');
+            sendOrderShipped(updatedOrder, updatedOrder.customer.email).catch(err => console.error('Email sending failed:', err));
+        }
+
+        res.json(updatedOrder);
     } catch (err) {
+        console.error(err);
         res.status(400).json({ message: 'ステータスの更新に失敗しました' });
     }
 });

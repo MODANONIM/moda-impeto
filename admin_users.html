@@ -112,6 +112,7 @@
 </head>
 
 <body>
+    <script src="assets/admin-auth.js"></script>
     <div class="admin-layout">
         <!-- Sidebar -->
         <aside class="admin-sidebar">
@@ -194,47 +195,13 @@
     <script>
         // Inline script for Admin Users logic for simplicity, similar to other admin pages
 
-        // --- Auth Check ---
-        const token = localStorage.getItem('adminToken');
-        if (!token) window.location.href = 'login.html';
-
-        // --- Fetch Helper (Reused) ---
-        async function fetchWithAuth(url, options = {}) {
-            const token = localStorage.getItem('adminToken');
-            const headers = {
-                ...options.headers,
-                'Authorization': `Bearer ${token}`
-            };
-
-            const res = await fetch(url, { ...options, headers });
-
-            if (res.status === 401) {
-                // Try refresh
-                const refreshRes = await fetch('/api/auth/refresh', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (refreshRes.ok) {
-                    const data = await refreshRes.json();
-                    localStorage.setItem('adminToken', data.token);
-                    headers['Authorization'] = `Bearer ${data.token}`;
-                    return fetch(url, { ...options, headers });
-                } else {
-                    localStorage.removeItem('adminToken');
-                    window.location.href = 'login.html';
-                }
-            }
-            return res;
-        }
+        // Auth Logic is handled by admin-auth.js
 
         // --- Main Logic ---
         document.addEventListener('DOMContentLoaded', () => {
             fetchUsers();
 
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                localStorage.removeItem('adminToken');
-                window.location.href = 'login.html';
-            });
+            // logoutBtn listener is handled by admin-auth.js if ID matches
 
             // Modal Close
             document.querySelector('.close-modal').addEventListener('click', () => {

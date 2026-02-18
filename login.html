@@ -66,8 +66,9 @@
         <h2 style="margin-bottom: 30px; font-family: 'Cinzel', serif;">管理者ログイン</h2>
         <div id="errorMsg" class="error-msg">ユーザー名またはパスワードが間違っています</div>
         <form id="loginForm" class="login-form">
-            <input type="text" name="username" placeholder="ユーザー名" required>
-            <input type="password" name="password" placeholder="パスワード" required>
+            <input type="text" name="username" placeholder="ユーザー名" required autocomplete="username">
+            <input type="password" name="password" placeholder="パスワード" required autocomplete="current-password">
+            <input type="password" name="secretCode" placeholder="シークレットコード" required autocomplete="off">
             <button type="submit" class="login-btn">ログイン</button>
         </form>
     </div>
@@ -88,7 +89,7 @@
                 const result = await res.json();
 
                 if (res.ok) {
-                    localStorage.setItem('adminToken', result.token);
+                    sessionStorage.setItem('adminToken', result.token);
                     window.location.href = 'admin.html';
                 } else {
                     const errorEl = document.getElementById('errorMsg');

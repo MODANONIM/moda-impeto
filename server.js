@@ -10,50 +10,48 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+const basicAuth = require('express-basic-auth');
+
+// MongoDB Connection
+console.log('Attempting to connect to MongoDB...');
+mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/moda_impeto')
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.error('MongoDB Connection Error:', err));
+
 app.use(helmet({
     contentSecurityPolicy: false, // Disabled for simplicity with external scripts (Stripe/PayPal)
 }));
 app.use(cors());
 
-// Stripe webhook needs raw body for signature verification
-// This must be before express.json() middleware
-app.use('/api/webhook', express.raw({ type: 'application/json' }));
+// Basic Auth for Admin Routes
+// Basic Auth for Admin Routes
+const adminAuth = basicAuth({
+    users: { [process.env.BASIC_AUTH_USER || 'admin']: process.env.BASIC_AUTH_PASS || 'supersecret' },
+    challenge: true,
+    realm: 'Moda Impeto Admin Area'
+});
 
-// JSON parsing for all other routes
+const adminPaths = [
+    '/admin',
+    '/admin.html',
+    '/orders.html',
+    '/inventory.html',
+    '/admin_users.html'
+];
+
+app.use(adminPaths, adminAuth);
+
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '/')));
-
-// Database Connection
-// Use environment variable for MongoDB connection, fallback to local DB for development
-const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/moda_impeto?directConnection=true';
-
-mongoose.connect(mongoURI)
-    .then(async () => {
-        console.log('MongoDB Connected');
-        // Create Default Admin
-        const Admin = require('./models/Admin');
-        const bcrypt = require('bcryptjs');
-        const adminExists = await Admin.findOne({ username: 'admin' });
-        if (!adminExists) {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash('admin123', salt);
-            const newAdmin = new Admin({ username: 'admin', password: hashedPassword });
-            await newAdmin.save();
-            console.log('Default Admin Created (admin / admin123)');
-        }
-    })
-    .catch(err => console.error('MongoDB Connection Error:', err));
+app.use(express.static(__dirname));
 
 // Routes
 const apiRoutes = require('./routes/api');
 const uploadRoutes = require('./routes/upload');
 const authRoutes = require('./routes/auth');
-const paymentRoutes = require('./routes/payment');
 
 app.use('/api/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/api', uploadRoutes);
-app.use('/api', paymentRoutes);
 
 // Serve index.html for root
 app.get('/', (req, res) => {

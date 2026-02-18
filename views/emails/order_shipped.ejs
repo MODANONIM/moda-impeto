@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Your Order Has Shipped!</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .content {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .order-info {
+            margin-bottom: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #000;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MODA IMPETO</h1>
+        </div>
+        <div class="content">
+            <div style="text-align: center;">
+                <span class="status-badge">SHIPPED</span>
+            </div>
+            <p>Dear <%= order.customer.firstName %>,</p>
+            <p>Great news! Your order has been shipped and is on its way to you.</p>
+
+            <div class="order-info">
+                <strong>Order ID:</strong>
+                <%= order.orderId %><br>
+                    <strong>Shipping Address:</strong><br>
+                    <%= order.customer.address %><br>
+                        <%= order.customer.city %>, <%= order.customer.zipCode %>
+            </div>
+
+            <p>We hope you enjoy your purchase!</p>
+
+            <div style="text-align: center;">
+                <a href="http://localhost:3000/account.html" class="btn">Track Your Order</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2026 MODA IMPETO. All rights reserved.</p>
+            <p>If you have any questions, please contact our support.</p>
+        </div>
+    </div>
+</body>
+
+</html>

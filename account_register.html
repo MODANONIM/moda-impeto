@@ -89,20 +89,24 @@
         <h1 class="auth-title">Create Account</h1>
         <form id="registerForm">
             <div class="form-group">
-                <input type="text" id="firstName" class="form-control" placeholder="First Name" required>
+                <input type="text" id="firstName" class="form-control" placeholder="First Name" required
+                    autocomplete="given-name">
             </div>
             <div class="form-group">
-                <input type="text" id="lastName" class="form-control" placeholder="Last Name" required>
+                <input type="text" id="lastName" class="form-control" placeholder="Last Name" required
+                    autocomplete="family-name">
             </div>
             <div class="form-group">
-                <input type="email" id="email" class="form-control" placeholder="Email Address" required>
+                <input type="email" id="email" class="form-control" placeholder="Email Address" required
+                    autocomplete="email">
             </div>
             <div class="form-group">
-                <input type="password" id="password" class="form-control" placeholder="Password" required>
+                <input type="password" id="password" class="form-control" placeholder="Password" required
+                    autocomplete="new-password">
             </div>
             <div class="form-group">
-                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password"
-                    required>
+                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" required
+                    autocomplete="new-password">
             </div>
             <p style="font-size: 0.85rem; color: var(--color-gray); margin-bottom: 20px; text-align: center;">
                 Please make sure to write down your password so you don't forget it.

@@ -338,6 +338,7 @@
 </head>
 
 <body>
+    <script src="assets/admin-auth.js"></script>
     <div class="admin-layout">
         <!-- Sidebar -->
         <aside class="admin-sidebar">
@@ -464,80 +465,7 @@
 
     <script>
         const API_URL = '/api/products';
-        let token = localStorage.getItem('adminToken');
-
-        if (!token) {
-            window.location.href = 'login.html';
-        }
-
-        async function fetchWithAuth(url, options = {}) {
-            const headers = {
-                ...options.headers,
-                'Authorization': `Bearer ${token}`
-            };
-            const res = await fetch(url, { ...options, headers });
-            if (res.status === 401 || res.status === 403) {
-                // Try to refresh token first
-                const refreshed = await refreshToken();
-                if (refreshed) {
-                    // Retry the original request with new token
-                    headers['Authorization'] = `Bearer ${token}`;
-                    return fetch(url, { ...options, headers });
-                } else {
-                    alert('セッションが期限切れです。再度ログインしてください。');
-                    localStorage.removeItem('adminToken');
-                    window.location.href = 'login.html';
-                }
-            }
-            return res;
-        }
-
-        // Token Auto-Refresh System
-        async function refreshToken() {
-            try {
-                const res = await fetch('/api/auth/refresh', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    token = data.token;
-                    localStorage.setItem('adminToken', token);
-                    console.log('✓ Token refreshed successfully');
-                    return true;
-                }
-                return false;
-            } catch (err) {
-                console.error('Token refresh failed:', err);
-                return false;
-            }
-        }
-
-        // Schedule token refresh (every 30 minutes)
-        async function scheduleTokenRefresh() {
-            try {
-                const res = await fetch('/api/auth/verify', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    // Refresh 1 hour before expiration, or every 30 minutes minimum
-                    const refreshIn = Math.min(data.expiresIn - 3600, 1800) * 1000;
-                    if (refreshIn > 0) {
-                        setTimeout(async () => {
-                            await refreshToken();
-                            scheduleTokenRefresh();
-                        }, refreshIn);
-                        console.log(`Next token refresh in ${Math.round(refreshIn / 1000 / 60)} minutes`);
-                    }
-                }
-            } catch (err) {
-                console.error('Failed to schedule token refresh:', err);
-            }
-        }
-
-        // Start auto-refresh when page loads
-        scheduleTokenRefresh();
+        // Auth logic is handled by admin-auth.js
 
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
@@ -610,7 +538,7 @@
                 sizes: selectedSizes
             };
 
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const isEditMode = e.target.getAttribute('data-mode') === 'edit';
             const productId = e.target.getAttribute('data-id');
 

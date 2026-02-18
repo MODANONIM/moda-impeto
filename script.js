@@ -3,7 +3,6 @@
    =============================================== */
 
 // Product Database (will be loaded from API)
-// Product Database (will be loaded from API)
 var PRODUCTS = PRODUCTS || {};
 var API_URL = '/api';
 
@@ -345,34 +344,17 @@ function renderCheckoutSummary() {
 /* ===============================================
    Payment Method Logic
    =============================================== */
-window.togglePaymentMethod = function () {
-    const method = document.querySelector('input[name="paymentMethod"]:checked').value;
-    const stripeSection = document.getElementById('stripe-section');
-    const paypalSection = document.getElementById('paypal-section');
-    const submitBtn = document.getElementById('placeOrderBtn');
-
-    if (method === 'stripe') {
-        stripeSection.style.display = 'block';
-        paypalSection.style.display = 'none';
-        submitBtn.style.display = 'block';
-    } else {
-        stripeSection.style.display = 'none';
-        paypalSection.style.display = 'block';
-        submitBtn.style.display = 'none';
-
-        // Render PayPal buttons if not already rendered
-        if (!document.getElementById('paypal-button-container').children.length) {
-            initPayPal();
-        }
-    }
-};
+/* ===============================================
+   Payment Method Logic (Refactored for PayPal Only)
+   =============================================== */
+// No toggle needed as PayPal is the only option
 
 /* ===============================================
    PayPal Logic
    =============================================== */
 function initPayPal() {
     if (typeof paypal === 'undefined') {
-        console.log('PayPal SDK loading...');
+
         setTimeout(initPayPal, 500);
         return;
     }
@@ -420,7 +402,7 @@ function initPayPal() {
         onApprove: function (data, actions) {
             return actions.order.capture().then(async function (details) {
                 // Successful capture!
-                console.log('PayPal Transaction completed by ' + details.payer.name.given_name);
+
 
                 // Save order to our backend
                 const orderData = collectOrderData('paypal', details.id);
@@ -530,187 +512,33 @@ async function saveOrderToBackend(orderData) {
 }
 
 /* ===============================================
-   Checkout Logic with Stripe
+   Checkout Logic (PayPal Only)
    =============================================== */
-var stripe;
-var elements;
-var cardElement;
-
 async function initCheckout() {
-    const checkoutForm = document.getElementById('checkoutForm');
-
-    // Initialize Payment Method Toggle
-    togglePaymentMethod();
-
     try {
-        // Fetch Stripe public key from server
+        // Fetch PayPal client ID from server
         const configRes = await fetch('/api/config');
         const config = await configRes.json();
-        const stripePublicKey = config.stripePublicKey;
         const paypalClientId = config.paypalClientId;
 
         // Load PayPal SDK dynamically
         if (paypalClientId) {
-            const script = document.createElement('script');
-            script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=JPY`;
-            script.async = true;
-            document.head.appendChild(script);
+            if (!document.querySelector('script[src*="paypal.com/sdk/js"]')) {
+                const script = document.createElement('script');
+                script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=JPY`;
+                script.async = true;
+                script.onload = () => initPayPal();
+                document.head.appendChild(script);
+            } else {
+                initPayPal();
+            }
         } else {
             console.warn('PayPal Client ID not configured');
         }
 
-        if (!stripePublicKey) {
-            console.error('Stripe public key not found');
-            return;
-        }
-
-        // Initialize Stripe
-        if (typeof Stripe !== 'undefined') {
-            stripe = Stripe(stripePublicKey, { locale: 'en' });
-            elements = stripe.elements();
-
-            // Create card element with custom styling
-            const style = {
-                base: {
-                    color: '#ffffff',
-                    fontFamily: '"Bodoni Moda", serif',
-                    fontSize: '16px',
-                    '::placeholder': {
-                        color: '#888888'
-                    }
-                },
-                invalid: {
-                    color: '#ff4444',
-                    iconColor: '#ff4444'
-                }
-            };
-
-            cardElement = elements.create('card', { style: style });
-            cardElement.mount('#card-element');
-
-            // Handle card element errors
-            cardElement.on('change', (event) => {
-                const displayError = document.getElementById('card-errors');
-                if (event.error) {
-                    displayError.textContent = event.error.message;
-                } else {
-                    displayError.textContent = '';
-                }
-            });
-        }
-
-        // Handle form submission (Stripe only)
-        checkoutForm?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            processOrder();
-        });
     } catch (err) {
-        console.error('Error initializing Stripe:', err);
-        const cardContainer = document.getElementById('card-element');
-        if (cardContainer) {
-            cardContainer.innerHTML = '<p class="error-text">Payment system unavailable. Please refresh the page.</p>';
-        }
+        console.error('Error initializing Checkout:', err);
     }
-}
-
-async function processOrder() {
-    const btn = document.getElementById('placeOrderBtn');
-    const cardErrors = document.getElementById('card-errors');
-
-    // Disable button and show loading state
-    btn.textContent = 'PROCESSING...';
-    btn.disabled = true;
-    btn.classList.add('processing');
-
-    // Calculate subtotal
-    const cartKey = getCartKey();
-    let cart = JSON.parse(localStorage.getItem(cartKey)) || {};
-    let subtotal = 0;
-    Object.values(cart).forEach(item => {
-        const product = PRODUCTS[item.id];
-        if (product) subtotal += product.price * item.quantity;
-    });
-
-    if (subtotal === 0) {
-        alert('カートが空です');
-        resetSubmitBtn();
-        return;
-    }
-
-    try {
-        // Step 1: Create PaymentIntent on server
-        // Use a temp order ID for metadata
-        const tempOrderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-
-        const intentRes = await fetch('/api/create-payment-intent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount: subtotal,
-                currency: 'jpy',
-                metadata: { orderId: tempOrderId }
-            })
-        });
-
-        if (!intentRes.ok) {
-            const errorData = await intentRes.json();
-            throw new Error(errorData.error || 'Payment setup failed');
-        }
-
-        const { clientSecret } = await intentRes.json();
-
-        const user = JSON.parse(localStorage.getItem('moda_impeto_user'));
-
-        const customerData = {
-            email: document.getElementById('email').value,
-            firstName: document.getElementById('firstName').value,
-            lastName: document.getElementById('lastName').value,
-            phone: document.getElementById('phone').value
-        };
-
-        // Step 2: Confirm payment with Stripe
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-                card: cardElement,
-                billing_details: {
-                    name: `${customerData.firstName} ${customerData.lastName}`,
-                    email: customerData.email,
-                    phone: customerData.phone
-                }
-            }
-        });
-
-        if (error) {
-            cardErrors.textContent = error.message;
-            resetSubmitBtn();
-            return;
-        }
-
-        if (paymentIntent.status === 'succeeded') {
-            // Step 3: Save order to database
-            // Note: collectOrderData generates a new ID, we should probably stick to one or update it
-            // For now, let's just use the one collectOrderData generates, 
-            // the metadata one in Stripe was just for tracking.
-
-            const orderData = collectOrderData('stripe', paymentIntent.id);
-            // Overwrite orderId if we want to match Stripe metadata, but it's okay if they differ slightly for now
-            // orderData.orderId = tempOrderId; 
-
-            await saveOrderToBackend(orderData);
-        }
-
-    } catch (err) {
-        alert('決済に失敗しました。もう一度お試しください。');
-        console.error(err);
-        resetSubmitBtn();
-    }
-}
-
-function resetSubmitBtn() {
-    const btn = document.getElementById('placeOrderBtn');
-    btn.textContent = 'PLACE ORDER';
-    btn.disabled = false;
-    btn.classList.remove('processing');
 }
 
 /* ===============================================
@@ -936,6 +764,12 @@ function initScrollAnimations() {
    Order History Logic
    =============================================== */
 async function initOrderHistory() {
+    const user = JSON.parse(localStorage.getItem('moda_impeto_user'));
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+
     const listContainer = document.getElementById('orderHistoryList');
     const myOrders = JSON.parse(localStorage.getItem('moda_impeto_my_orders')) || [];
 
