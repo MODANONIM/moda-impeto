@@ -262,12 +262,26 @@ select:focus {
 
 /* Responsiveness */
 @media (max-width: 1024px) {
-    .checkout-container {
-        grid-template-columns: 1fr;
+    .checkout-page {
+        padding-top: 80px;
+        /* Reduce top padding on mobile */
     }
 
-    .checkout-summary-section .summary-box {
+    .checkout-container {
+        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .checkout-summary-section {
+        order: -1;
+        /* Move summary to top */
+        margin-bottom: var(--space-md);
         position: static;
+    }
+
+    .checkout-form-section {
+        order: 1;
     }
 }
 
