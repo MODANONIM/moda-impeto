@@ -377,7 +377,10 @@ function initPayPal() {
             const zipCode = document.getElementById('zipCode').value;
 
             if (!email || !firstName || !lastName || !address || !city || !state || !zipCode) {
-                alert('配送先情報をすべて入力してください。');
+                showToast('配送先情報をすべて入力してください。');
+                // Scroll to top of form to show missing fields
+                const form = document.getElementById('checkoutForm');
+                if (form) form.scrollIntoView({ behavior: 'smooth' });
                 return Promise.reject(new Error('Missing required fields'));
             }
 
@@ -389,6 +392,11 @@ function initPayPal() {
                 const product = PRODUCTS[item.id];
                 if (product) subtotal += product.price * item.quantity;
             });
+
+            if (subtotal <= 0) {
+                showToast('カートが空か、商品情報の読み込みに失敗しました。');
+                return Promise.reject(new Error('Invalid subtotal'));
+            }
 
             return actions.order.create({
                 purchase_units: [{
@@ -411,7 +419,7 @@ function initPayPal() {
         },
         onError: function (err) {
             console.error('PayPal Error:', err);
-            alert('PayPal決済中にエラーが発生しました。');
+            showToast('PayPal決済中にエラーが発生しました。');
         }
     }).render('#paypal-button-container');
 }
