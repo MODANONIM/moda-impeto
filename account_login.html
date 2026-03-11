@@ -168,8 +168,8 @@
                 const result = await res.json();
 
                 if (res.ok) {
-                    localStorage.setItem('moda_impeto_user_token', result.token);
-                    localStorage.setItem('moda_impeto_user', JSON.stringify(result.user));
+                    sessionStorage.setItem('moda_impeto_user_token', result.token);
+                    sessionStorage.setItem('moda_impeto_user', JSON.stringify(result.user));
 
                     // Merge guest cart if exists
                     if (typeof mergeGuestCart === 'function') {

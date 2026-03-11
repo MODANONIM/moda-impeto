@@ -24,7 +24,7 @@ async function initApp() {
 
     // If on checkout page, render it
     if (document.getElementById('checkoutItems')) {
-        const token = localStorage.getItem('moda_impeto_user_token');
+        const token = sessionStorage.getItem('moda_impeto_user_token');
         if (!token) {
             window.location.href = 'account_login.html?redirect=checkout.html';
             return;
@@ -32,7 +32,7 @@ async function initApp() {
         renderCheckoutSummary();
 
         // Prefill email
-        const user = JSON.parse(localStorage.getItem('moda_impeto_user'));
+        const user = JSON.parse(sessionStorage.getItem('moda_impeto_user'));
         if (user && user.email) {
             const emailInput = document.getElementById('email');
             if (emailInput) emailInput.value = user.email;
@@ -126,7 +126,7 @@ function initNavigation() {
    Cart Logic
    =============================================== */
 function getCartKey() {
-    const user = JSON.parse(localStorage.getItem('moda_impeto_user'));
+    const user = JSON.parse(sessionStorage.getItem('moda_impeto_user'));
     return user ? `moda_impeto_cart_${user._id || user.id}` : 'moda_impeto_cart_guest';
 }
 
@@ -498,7 +498,7 @@ async function saveOrderToBackend(orderData) {
     const orderNumberEl = document.getElementById('orderNumber');
 
     try {
-        const token = localStorage.getItem('moda_impeto_user_token');
+        const token = sessionStorage.getItem('moda_impeto_user_token');
         const headers = { 'Content-Type': 'application/json' };
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -793,7 +793,7 @@ function initScrollAnimations() {
    Order History Logic
    =============================================== */
 async function initOrderHistory() {
-    const user = JSON.parse(localStorage.getItem('moda_impeto_user'));
+    const user = JSON.parse(sessionStorage.getItem('moda_impeto_user'));
     if (!user) {
         window.location.href = 'login.html';
         return;

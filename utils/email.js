@@ -61,7 +61,8 @@ const sendEmail = async (to, subject, htmlContent) => {
 const sendOrderConfirmation = async (order, userEmail) => {
     console.log('Sending order confirmation for order:', order.orderId);
     try {
-        const html = await renderTemplate('order_confirmation.ejs', { order });
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+        const html = await renderTemplate('order_confirmation.ejs', { order, baseUrl });
         await sendEmail(userEmail, `Order Confirmation #${order.orderId}`, html);
     } catch (err) {
         console.error('Template rendering failed:', err);
@@ -71,7 +72,8 @@ const sendOrderConfirmation = async (order, userEmail) => {
 const sendOrderShipped = async (order, userEmail) => {
     console.log('Sending shipping notification for order:', order.orderId);
     try {
-        const html = await renderTemplate('order_shipped.ejs', { order });
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+        const html = await renderTemplate('order_shipped.ejs', { order, baseUrl });
         await sendEmail(userEmail, `Your Order #${order.orderId} Has Shipped`, html);
     } catch (err) {
         console.error('Template rendering failed:', err);
