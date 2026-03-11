@@ -22,7 +22,7 @@ router.post('/login', async (req, res) => {
         }
 
         // 2. Check Secret Code
-        if (secretCode !== 'admin123') {
+        if (secretCode !== (process.env.ADMIN_SECRET_CODE || 'admin123')) {
             await handleFailedLogin(admin);
             return res.status(400).json({ message: 'Invalid credentials' });
         }
