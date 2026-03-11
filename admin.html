@@ -726,7 +726,7 @@
                 const res = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData,
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+                    headers: { 'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}` }
                 });
 
                 if (res.ok) {
@@ -753,13 +753,6 @@
             dropZone.querySelector('p').textContent = '画像をドラッグ＆ドロップ または クリックしてアップロード'; // Reset text
         });
 
-        /* ===============================================
-           Logout Logic
-           =============================================== */
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('adminToken');
-            window.location.href = 'login.html';
-        });
         // Password Change Logic
         document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
             e.preventDefault();
