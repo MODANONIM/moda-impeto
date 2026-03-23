@@ -6,7 +6,7 @@
     min-height: 100vh;
     padding: var(--space-2xl) 0;
     padding-top: calc(var(--space-2xl) + 60px);
-    background: var(--color-black);
+    background: var(--color-white);
 }
 
 .checkout-page__title {
@@ -25,9 +25,9 @@
 
 /* Form Styles */
 .checkout-form-section {
-    background: var(--color-black-light);
+    background: var(--color-white);
     padding: var(--space-xl);
-    border: 1px solid var(--color-black-lighter);
+    border: 1px solid #eaeaea;
 }
 
 .form-group {
@@ -39,10 +39,10 @@
     font-size: 1rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-white);
+    color: var(--color-black);
     margin-bottom: var(--space-md);
     padding-bottom: var(--space-xs);
-    border-bottom: 2px solid var(--color-red);
+    border-bottom: 2px solid var(--color-black);
     display: inline-block;
 }
 
@@ -62,9 +62,9 @@ input[type="tel"],
 select {
     width: 100%;
     padding: var(--space-sm);
-    background: var(--color-black);
-    border: 1px solid var(--color-black-lighter);
-    color: var(--color-white);
+    background: var(--color-white);
+    border: 1px solid #eaeaea;
+    color: var(--color-black);
     font-family: var(--font-body);
     font-size: 1rem;
     transition: var(--transition-normal);
@@ -82,8 +82,8 @@ select {
 }
 
 select option {
-    background: var(--color-black);
-    color: var(--color-white);
+    background: var(--color-white);
+    color: var(--color-black);
 }
 
 input[type="text"]:focus,
@@ -91,8 +91,8 @@ input[type="email"]:focus,
 input[type="tel"]:focus,
 select:focus {
     outline: none;
-    border-color: var(--color-red);
-    box-shadow: 0 0 10px rgba(196, 30, 58, 0.2);
+    border-color: var(--color-black);
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 /* Payment Methods */
@@ -108,14 +108,14 @@ select:focus {
     gap: 10px;
     cursor: pointer;
     padding: var(--space-sm) var(--space-md);
-    background: var(--color-black);
-    border: 1px solid var(--color-black-lighter);
+    background: var(--color-white);
+    border: 1px solid #eaeaea;
     transition: var(--transition-normal);
 }
 
 .payment-option:has(input:checked) {
-    border-color: var(--color-red);
-    background: rgba(196, 30, 58, 0.05);
+    border-color: var(--color-black);
+    background: #f5f5f5;
 }
 
 .payment-details {
@@ -140,8 +140,8 @@ select:focus {
 /* Summary Box */
 .checkout-summary-section .summary-box {
     padding: var(--space-xl);
-    background: var(--color-black-light);
-    border: 1px solid var(--color-black-lighter);
+    background: var(--color-white);
+    border: 1px solid #eaeaea;
     position: sticky;
     top: 100px;
 }
@@ -168,7 +168,7 @@ select:focus {
     width: 60px;
     height: 60px;
     flex-shrink: 0;
-    background: var(--color-black);
+    background: var(--color-white);
 }
 
 .summary-item__image img {
@@ -183,18 +183,18 @@ select:focus {
 
 .summary-item__name {
     font-size: 0.9rem;
-    color: var(--color-white);
+    color: var(--color-black);
     margin-bottom: 2px;
 }
 
 .summary-item__price {
     font-size: 0.8rem;
-    color: var(--color-gray);
+    color: #888888;
 }
 
 .summary-divider {
     height: 1px;
-    background: var(--color-black-lighter);
+    background: var(--color-white);
     margin: var(--space-md) 0;
 }
 
@@ -202,7 +202,7 @@ select:focus {
     display: flex;
     justify-content: space-between;
     margin-bottom: var(--space-sm);
-    color: var(--color-gray);
+    color: #888888;
     font-size: 0.9rem;
 }
 
@@ -211,11 +211,11 @@ select:focus {
     justify-content: space-between;
     margin-top: var(--space-md);
     padding-top: var(--space-md);
-    border-top: 2px solid var(--color-red);
+    border-top: 2px solid var(--color-black);
     font-family: var(--font-display);
     font-size: 1.2rem;
     font-weight: 700;
-    color: var(--color-white);
+    color: var(--color-black);
 }
 
 /* Success Overlay */
@@ -225,7 +225,7 @@ select:focus {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--color-black);
+    background: var(--color-white);
     z-index: 2000;
     display: flex;
     align-items: center;
@@ -245,7 +245,7 @@ select:focus {
     font-size: 3rem;
     margin: var(--space-md) 0;
     letter-spacing: 0.2em;
-    color: var(--color-white);
+    color: var(--color-black);
 }
 
 .success-content p {
@@ -255,7 +255,7 @@ select:focus {
 .success-icon {
     width: 80px;
     height: 80px;
-    fill: var(--color-red);
+    fill: var(--color-black);
     margin-bottom: var(--space-md);
     filter: drop-shadow(var(--shadow-glow-red));
 }

@@ -1,5 +1,5 @@
 /* ===============================================
-   MODA IMPETO - Interactive Scripts
+   JE ME DÉCLARE - Interactive Scripts
    =============================================== */
 
 // Product Database (will be loaded from API)

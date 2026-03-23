@@ -8,22 +8,22 @@
    =============================================== */
 :root {
   /* Brand Colors */
-  --color-black: #0a0a0a;
-  --color-black-light: #1a1a1a;
-  --color-black-lighter: #2a2a2a;
-  --color-red: #c41e3a;
-  --color-red-dark: #8b0000;
-  --color-red-light: #ff3b5c;
-  --color-yellow: #f5c618;
-  --color-yellow-dark: #c9a000;
-  --color-white: #fafafa;
+  --color-black: #000000;
+  --color-black-light: #222222;
+  --color-black-lighter: #444444;
+  --color-red: #000000;
+  --color-red-dark: #000000;
+  --color-red-light: #444444;
+  --color-yellow: #000000;
+  --color-yellow-dark: #000000;
+  --color-white: #ffffff;
   --color-gray: #888888;
-  --color-gray-dark: #444444;
+  --color-gray-dark: #e0e0e0;
 
   /* Typography */
-  --font-display: 'Bodoni Moda', serif;
-  --font-body: 'Bodoni Moda', serif;
-  --font-accent: 'Cinzel', serif;
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-accent: 'Inter', sans-serif;
 
   /* Spacing */
   --space-xs: 0.5rem;
@@ -40,11 +40,11 @@
   --transition-luxury: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
-  --shadow-glow-red: 0 0 30px rgba(196, 30, 58, 0.4);
-  --shadow-glow-yellow: 0 0 30px rgba(245, 198, 24, 0.3);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-glow-red: none;
+  --shadow-glow-yellow: none;
 }
 
 /* ===============================================
@@ -61,6 +61,7 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
 }
 
 body {
@@ -69,6 +70,12 @@ body {
   color: var(--color-white);
   line-height: 1.6;
   overflow-x: hidden;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 a {
@@ -82,6 +89,12 @@ img {
   height: auto;
   display: block;
 }
+
+.nav__logo, .hero__logo, .story__logo, .footer__logo, .admin-sidebar__logo img {
+  mix-blend-mode: multiply;
+}
+
+
 
 ul {
   list-style: none;
@@ -117,7 +130,7 @@ h3 {
 
 p {
   font-size: 1rem;
-  color: var(--color-gray);
+  color: var(--color-black-lighter);
 }
 
 .text-accent {
@@ -158,19 +171,22 @@ p {
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-sm) var(--space-lg);
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: var(--transition-normal);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.07);
+  color: var(--color-black) !important;
 }
 
 .nav.scrolled {
-  background: rgba(10, 10, 10, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   padding: var(--space-sm) var(--space-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.05);
 }
 
 /* ... previous styles ... */
@@ -188,63 +204,11 @@ p {
 
 /* ... other styles ... */
 
-@media (max-width: 768px) {
-  .nav {
-    justify-content: space-between;
-    /* Keep toggle and icons on sides */
-    position: fixed;
-    /* Ensure it stays fixed */
-  }
 
-  /* Hide the hamburger menu as requested */
-  .nav__toggle {
-    display: none !important;
-  }
-
-  /* Reset logo alignment to default (Left) */
-  .nav__logo-link {
-    position: static;
-    transform: none;
-    margin-right: auto;
-    /* Ensures it stays left if needed */
-  }
-
-  .nav__logo {
-    height: 35px;
-    /* Slightly smaller on mobile if needed, or keep 40 */
-  }
-
-  /* Hide navigation links completely on mobile since menu is gone */
-  .nav__links {
-    display: none !important;
-  }
-
-  .nav__links {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: rgba(10, 10, 10, 0.98);
-    backdrop-filter: blur(20px);
-    flex-direction: column;
-    align-items: center;
-    padding: var(--space-xl) 0;
-    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-    /* Hidden state */
-    transition: clip-path 0.4s ease-in-out;
-  }
-
-  .nav__links.active {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    /* Visible state */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-}
 
 @media (min-width: 769px) {
   .nav__logo {
-    height: 60px;
-    /* Larger on desktop */
+    height: 48px; /* Balanced size for the square star icon */
   }
 }
 
@@ -259,7 +223,7 @@ p {
   align-items: center;
   gap: 10px;
   position: relative;
-  color: var(--color-white);
+  color: var(--color-black);
   transition: var(--transition-normal);
 }
 
@@ -273,7 +237,7 @@ p {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: var(--color-red);
+  background: var(--color-black);
   color: var(--color-white);
   font-size: 0.7rem;
   font-family: var(--font-accent);
@@ -284,11 +248,11 @@ p {
   justify-content: center;
   border-radius: 50%;
   font-weight: 700;
-  box-shadow: 0 0 10px rgba(196, 30, 58, 0.5);
+  border: 2px solid var(--color-white);
 }
 
 .nav__cart-link:hover {
-  color: var(--color-red-light);
+  color: var(--color-black);
   transform: translateY(-2px);
 }
 
@@ -337,7 +301,7 @@ p {
 .nav__toggle span {
   width: 25px;
   height: 2px;
-  background: var(--color-white);
+  background: var(--color-black);
   transition: var(--transition-normal);
 }
 
@@ -352,22 +316,10 @@ p {
   align-items: center;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(ellipse at center, var(--color-black-light) 0%, var(--color-black) 70%);
+  background: var(--color-white);
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    linear-gradient(45deg, transparent 49%, rgba(196, 30, 58, 0.03) 49%, rgba(196, 30, 58, 0.03) 51%, transparent 51%),
-    linear-gradient(-45deg, transparent 49%, rgba(245, 198, 24, 0.02) 49%, rgba(245, 198, 24, 0.02) 51%, transparent 51%);
-  background-size: 60px 60px;
-  animation: patternMove 20s linear infinite;
-}
+.hero::before { display: none; }
 
 @keyframes patternMove {
   0% {
@@ -388,8 +340,8 @@ p {
 .hero__logo {
   width: min(400px, 70vw);
   margin: 0 auto var(--space-lg);
-  animation: logoReveal 1.5s var(--transition-luxury) forwards, logoGlowLoop 4s ease-in-out 1.5s infinite;
-  filter: drop-shadow(var(--shadow-glow-red));
+  animation: logoReveal 1.5s var(--transition-luxury) forwards;
+  mix-blend-mode: multiply;
 }
 
 @keyframes logoReveal {
@@ -404,19 +356,7 @@ p {
   }
 }
 
-@keyframes logoGlowLoop {
-  0% {
-    filter: drop-shadow(0 0 15px rgba(196, 30, 58, 0.4));
-  }
 
-  50% {
-    filter: drop-shadow(0 0 35px rgba(196, 30, 58, 0.9));
-  }
-
-  100% {
-    filter: drop-shadow(0 0 15px rgba(196, 30, 58, 0.4));
-  }
-}
 
 .hero__brand {
   font-family: var(--font-display);
@@ -471,7 +411,7 @@ p {
 }
 
 .hero__tagline-quiet {
-  color: var(--color-white);
+  color: var(--color-black);
 }
 
 .hero__tagline-divider {
@@ -520,9 +460,9 @@ p {
 }
 
 .btn--primary {
-  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-dark) 100%);
-  color: var(--color-white);
-  border-color: var(--color-red);
+  background: var(--color-black);
+  color: #ffffff;
+  border-color: var(--color-black);
 }
 
 .btn--primary::before {
@@ -547,8 +487,8 @@ p {
 
 .btn--outline {
   background: transparent;
-  color: var(--color-white);
-  border-color: var(--color-white);
+  color: var(--color-black);
+  border-color: var(--color-black);
 }
 
 .btn--outline:hover {
@@ -560,9 +500,10 @@ p {
    Products Section
    =============================================== */
 .products {
-  padding: var(--space-2xl) 0;
-  background: var(--color-black);
+padding: var(--space-2xl) 0;
+  background: var(--color-white);
   position: relative;
+
 }
 
 .products::before {
@@ -590,7 +531,7 @@ p {
 
 .section__title {
   font-size: clamp(2rem, 5vw, 3.5rem);
-  color: var(--color-white);
+  color: var(--color-black);
 }
 
 .products__grid {
@@ -600,10 +541,11 @@ p {
 }
 
 .product-card {
-  position: relative;
-  background: var(--color-black-light);
-  border: 1px solid var(--color-black-lighter);
+position: relative;
+  background: var(--color-white);
+  border: 1px solid #eaeaea;
   overflow: hidden;
+
 }
 
 .product-card__link {
@@ -668,14 +610,14 @@ p {
 .product-card__name {
   font-family: var(--font-display);
   font-size: 1.3rem;
-  color: var(--color-white);
+  color: var(--color-black);
   margin-bottom: var(--space-xs);
 }
 
 .product-card__price {
   font-family: var(--font-body);
   font-size: 1.1rem;
-  color: var(--color-gray);
+  color: var(--color-black-lighter);
 }
 
 .product-card__overlay {
@@ -705,10 +647,11 @@ p {
    Story Section
    =============================================== */
 .story {
-  padding: var(--space-2xl) 0;
-  background: linear-gradient(180deg, var(--color-black) 0%, var(--color-black-light) 50%, var(--color-black) 100%);
+padding: var(--space-2xl) 0;
+  background: var(--color-white);
   position: relative;
   overflow: hidden;
+
 }
 
 .story__content {
@@ -723,28 +666,88 @@ p {
 }
 
 .story__text h2 {
-  margin-bottom: var(--space-md);
-  color: var(--color-white);
-}
-
-.story__text h2 span {
-  color: var(--color-red);
+  margin-bottom: var(--space-lg);
+  color: var(--color-black);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .story__text p {
   font-size: 1.1rem;
   line-height: 1.8;
   margin-bottom: var(--space-md);
-  color: var(--color-gray);
+  color: var(--color-black);
+  letter-spacing: 0.02em;
 }
 
-.story__text p:first-of-type::first-letter {
+.philosophy-manifesto {
   font-family: var(--font-display);
-  font-size: 4rem;
-  float: left;
-  line-height: 1;
-  margin-right: var(--space-sm);
-  color: var(--color-yellow);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: var(--space-lg);
+  color: var(--color-black);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.philosophy-description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: var(--space-xl);
+  color: var(--color-black);
+  opacity: 0.9;
+}
+
+.philosophy-questions {
+  margin-top: var(--space-xl);
+  border-top: 1px solid #eaeaea;
+  padding-top: var(--space-lg);
+}
+
+.philosophy-questions p {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-xs);
+  color: var(--color-black);
+  opacity: 0.7;
+}
+
+.philosophy-manifesto {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: var(--space-lg);
+  color: var(--color-black);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.philosophy-description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: var(--space-xl);
+  color: var(--color-black);
+  opacity: 0.9;
+}
+
+.philosophy-questions {
+  margin-top: var(--space-xl);
+  border-top: 1px solid #eaeaea;
+  padding-top: var(--space-lg);
+}
+
+.philosophy-questions p {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-xs);
+  color: var(--color-black);
+  opacity: 0.7;
 }
 
 .story__visual {
@@ -758,7 +761,7 @@ p {
   width: 80%;
   max-width: 400px;
   animation: floatLogo 6s ease-in-out infinite;
-  filter: drop-shadow(var(--shadow-glow-red));
+  mix-blend-mode: multiply;
 }
 
 @keyframes floatLogo {
@@ -777,9 +780,10 @@ p {
    Footer
    =============================================== */
 .footer {
-  padding: var(--space-xl) 0 var(--space-md);
-  background: var(--color-black);
+padding: var(--space-xl) 0 var(--space-md);
+  background: var(--color-white);
   border-top: 1px solid var(--color-black-lighter);
+
 }
 
 .footer__content {
@@ -801,7 +805,7 @@ p {
 
 .footer__description {
   font-size: 0.9rem;
-  color: var(--color-gray);
+  color: var(--color-black-lighter);
   margin-bottom: var(--space-md);
 }
 
@@ -832,7 +836,7 @@ p {
   font-size: 0.9rem;
   letter-spacing: 0.2em;
   margin-bottom: var(--space-md);
-  color: var(--color-white);
+  color: var(--color-black);
 }
 
 .footer__column ul {
@@ -843,7 +847,7 @@ p {
 
 .footer__column a {
   font-size: 0.9rem;
-  color: var(--color-gray);
+  color: var(--color-black-lighter);
   transition: var(--transition-fast);
 }
 
@@ -866,7 +870,7 @@ p {
   padding: var(--space-sm);
   background: var(--color-black-light);
   border: 1px solid var(--color-gray-dark);
-  color: var(--color-white);
+  color: var(--color-black);
   font-family: var(--font-body);
   font-size: 0.9rem;
   transition: var(--transition-normal);
@@ -878,14 +882,14 @@ p {
 }
 
 .footer__newsletter-input::placeholder {
-  color: var(--color-gray);
+  color: var(--color-black-lighter);
 }
 
 .footer__newsletter-btn {
   padding: var(--space-sm) var(--space-md);
   background: var(--color-red);
   border: none;
-  color: var(--color-white);
+  color: var(--color-black);
   font-family: var(--font-accent);
   letter-spacing: 0.1em;
   cursor: pointer;
@@ -906,7 +910,7 @@ p {
 
 .footer__copyright {
   font-size: 0.8rem;
-  color: var(--color-gray);
+  color: var(--color-black-lighter);
 }
 
 .footer__legal {
@@ -917,11 +921,11 @@ p {
 
 .footer__legal a {
   font-size: 0.8rem;
-  color: var(--color-gray);
+  color: var(--color-black-lighter);
 }
 
 .footer__legal a:hover {
-  color: var(--color-white);
+  color: var(--color-black);
 }
 
 /* ===============================================
@@ -948,130 +952,7 @@ p {
   }
 }
 
-@media (max-width: 768px) {
-
-  /* Navigation */
-  .nav {
-    padding: var(--space-sm) var(--space-md);
-    background: rgba(10, 10, 10, 0.95);
-    /* Always show background on mobile */
-  }
-
-  .nav__links {
-    position: fixed;
-    top: 70px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(10, 10, 10, 0.98);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-xl);
-    transform: translateX(100%);
-    transition: transform var(--transition-normal);
-    z-index: 999;
-  }
-
-  .nav__links.active {
-    display: flex;
-    /* Override display: none */
-    transform: translateX(0);
-  }
-
-  .nav__toggle {
-    display: flex;
-    margin-left: auto;
-    /* Push to right */
-    margin-right: var(--space-md);
-  }
-
-  /* Cart icon positioning adjustment for mobile */
-  .nav__cart {
-    margin-left: 0;
-  }
-
-  /* Hero */
-  .hero__logo {
-    width: min(280px, 80vw);
-    /* Smaller logo */
-    margin-bottom: var(--space-md);
-  }
-
-  .hero__brand {
-    font-size: clamp(2rem, 10vw, 3rem);
-    /* Smaller brand text */
-  }
-
-  .hero__tagline {
-    flex-direction: column;
-    gap: var(--space-xs);
-    font-size: 0.9rem;
-    margin-bottom: var(--space-lg);
-  }
-
-  .hero__tagline-divider {
-    width: 40px;
-    height: 1px;
-    margin: 5px 0;
-  }
-
-  /* Story */
-  .story {
-    padding: var(--space-lg) 0;
-  }
-
-  .story__logo {
-    width: min(200px, 60vw);
-  }
-
-  .story__text h2 {
-    font-size: 1.8rem;
-  }
-
-  .story__text p:first-of-type::first-letter {
-    font-size: 3rem;
-  }
-
-  /* Products */
-  .products__grid {
-    grid-template-columns: 1fr;
-    /* Single column */
-    padding: 0 var(--space-sm);
-  }
-
-  /* Footer */
-  .footer__content {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: var(--space-lg);
-  }
-
-  .footer__brand {
-    max-width: none;
-    margin: 0 auto;
-  }
-
-  .footer__social {
-    justify-content: center;
-  }
-
-  .footer__bottom {
-    flex-direction: column;
-    gap: var(--space-sm);
-    text-align: center;
-  }
-
-  .footer__legal {
-    justify-content: center;
-    gap: var(--space-xs);
-    font-size: 0.7rem;
-  }
-
-  .footer__legal a {
-    font-size: 0.7rem;
-  }
-}
+  /* Consolidated mobile rules handled in the first media query */
 
 /* Product Detail Mobile */
 @media (max-width: 768px) {
@@ -1162,7 +1043,7 @@ p {
    =============================================== */
 ::selection {
   background: var(--color-red);
-  color: var(--color-white);
+  color: var(--color-black);
 }
 
 /* ===============================================
@@ -1213,7 +1094,7 @@ p {
   font-family: var(--font-accent);
   font-size: 0.9rem;
   margin-bottom: var(--space-xs);
-  color: var(--color-gray);
+  color: var(--color-black-lighter);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -1227,7 +1108,7 @@ p {
 .size-btn {
   background: transparent;
   border: 1px solid var(--color-gray);
-  color: var(--color-white);
+  color: var(--color-black);
   padding: 8px 16px;
   font-family: var(--font-body);
   font-size: 1rem;
@@ -1238,14 +1119,14 @@ p {
 }
 
 .size-btn:hover {
-  border-color: var(--color-white);
+  border-color: var(--color-black);
   background: rgba(255, 255, 255, 0.1);
 }
 
 .size-btn.selected {
   background: var(--color-white);
   color: var(--color-black);
-  border-color: var(--color-white);
+  border-color: var(--color-black);
   font-weight: bold;
 }
 
@@ -1270,7 +1151,7 @@ p {
   transition: all 0.3s ease;
   font-family: var(--font-body);
   font-size: 0.95rem;
-  color: var(--color-white);
+  color: #ffffff;
 }
 
 .cart-toast.show {
@@ -1312,4 +1193,76 @@ p {
 .btn--disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}@media (max-width: 768px) {
+  .nav {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: var(--space-sm) var(--space-md) !important;
+    background: rgba(255, 255, 255, 0.97) !important;
+    backdrop-filter: blur(20px) !important;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.07) !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    color: #000000 !important;
+  }
+
+  .nav__toggle {
+    display: none !important;
+  }
+
+  .nav__logo-link {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav__user-actions {
+    margin-left: auto !important;
+  }
+
+  .nav__logo {
+    height: 28px !important; /* Slightly smaller for mobile header balance */
+  }
+
+  .nav__links {
+    display: none !important;
+  }
+
+  .nav__link {
+    font-size: 1.6rem !important;
+    color: #000000 !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.15em !important;
+    text-decoration: none !important;
+  }
+
+  .nav__user-actions {
+    gap: 12px !important;
+  }
+
+  /* Story / Philosophy Mobile */
+  .story__content {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    text-align: center;
+  }
+
+  .story__text {
+    padding-right: 0;
+  }
+
+  .story__logo {
+    width: 40%;
+    max-width: 120px;
+    margin: 2rem auto 0;
+  }
 }
+
